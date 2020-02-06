@@ -1,4 +1,4 @@
-Feature: the simple greeting can be retrieved
+Feature: The Greeting API works
 
   Scenario: client makes call to GET /api/v1/hello
     When the client calls /api/v1/hello

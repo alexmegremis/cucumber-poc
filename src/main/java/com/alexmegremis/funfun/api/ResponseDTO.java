@@ -1,5 +1,6 @@
 package com.alexmegremis.funfun.api;
 
+import com.alexmegremis.funfun.persistence.PersonEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -8,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseDTO {
-    private String message;
+    private String       message;
     private PersonEntity person;
 }

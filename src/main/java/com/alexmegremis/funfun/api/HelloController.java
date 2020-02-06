@@ -1,5 +1,6 @@
 package com.alexmegremis.funfun.api;
 
+import com.alexmegremis.funfun.persistence.PersonEntity;
 import org.springframework.http.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;

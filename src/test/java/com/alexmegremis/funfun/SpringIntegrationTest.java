@@ -3,8 +3,10 @@ package com.alexmegremis.funfun;
 import com.alexmegremis.funfun.api.ResponseDTO;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.junit.Cucumber;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,23 +22,23 @@ public class SpringIntegrationTest {
 
     protected ResponseEntity lastResponse;
 
-    @Value("${server.port}")
+    @Value ("${server.port}")
     private Integer port;
 
     @Autowired
     protected RestTemplate restTemplate;
 
-    public void doGet(final String path, final String...variables) {
+    public void doGet(final String path, final String... variables) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path(path);
 
-        if(!Arrays.isNullOrEmpty(variables)) {
-            for(int i = 0; i < variables.length; i++) {
-                uriComponentsBuilder.queryParam(variables[i], variables[++i]);
+        if (! Arrays.isNullOrEmpty(variables)) {
+            for (int i = 0; i < variables.length; i++) {
+                uriComponentsBuilder.queryParam(variables[i], variables[++ i]);
             }
         }
 
         log.info(">>> About to call : " + uriComponentsBuilder.toUriString());
-        lastResponse = restTemplate.getForEntity(uriComponentsBuilder.build().toUri(),ResponseDTO.class );
+        lastResponse = restTemplate.getForEntity(uriComponentsBuilder.build().toUri(), ResponseDTO.class);
     }
 
     @Before
