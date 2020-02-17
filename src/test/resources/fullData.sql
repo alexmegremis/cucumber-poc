@@ -1,0 +1,78 @@
+-- CREATE TABLE PERSON (
+--     ID         INTEGER PRIMARY KEY,
+--     NAME_FIRST VARCHAR(20) NOT NULL,
+--     NAME_LAST  VARCHAR(20) NOT NULL
+-- );
+--
+-- CREATE TABLE PRINCIPAL (
+--     ID                  INTEGER PRIMARY KEY,
+--     ID_PERSON_OWNER     INTEGER      NOT NULL,
+--     NAME                VARCHAR(256) NOT NULL,
+--     DATETIME_CREATED    DATETIME     NOT NULL,
+--     DATETIME_SUPERSEDED DATETIME     NOT NULL,
+--     FOREIGN KEY (ID_PERSON_OWNER) REFERENCES PERSON(ID)
+-- );
+--
+-- CREATE TABLE APPLICATION (
+--     ID         INTEGER PRIMARY KEY,
+--     NAME       VARCHAR(256) NOT NULL,
+--     IDENTIFIER VARCHAR(256) NOT NULL,
+-- );
+--
+-- CREATE TABLE REPO (
+--     ID                  INTEGER PRIMARY KEY,
+--     NAME                VARCHAR(256) NOT NULL,
+--     ID_APPLICATION      INTEGER      NOT NULL,
+--     DATETIME_CREATED    DATETIME     NOT NULL,
+--     DATETIME_SUPERSEDED DATETIME     NOT NULL,
+--     FOREIGN KEY (ID_APPLICATION) REFERENCES APPLICATION(ID)
+-- );
+--
+-- CREATE TABLE MAP_PRINCIPAL_REPO (
+--     ID                  INTEGER PRIMARY KEY,
+--     ID_PRINCIPAL        INTEGER      NOT NULL,
+--     ID_REPO             INTEGER      NOT NULL,
+--     PERMISSION          VARCHAR(256) NOT NULL,
+--     DATETIME_CREATED    DATETIME     NOT NULL,
+--     DATETIME_SUPERSEDED DATETIME     NOT NULL
+-- );
+
+
+INSERT
+INTO PERSON (ID, NAME_FIRST, NAME_LAST)
+VALUES (1, 'Alex', 'Megremis'),
+       (2, 'Zoe', 'Megremis'),
+       (3, 'Thomas', 'Megremis'),
+       (4, 'Watson', 'Megremis'),
+       (5, 'Olive', 'Megremis');
+
+INSERT
+INTO PRINCIPAL(ID, ID_PERSON_OWNER, NAME, DATETIME_CREATED, DATETIME_SUPERSEDED)
+VALUES (1, 1, 'amegremis', '2020-01-15', NULL),
+       (2, 1, 'alexam', '2020-01-29', NULL),
+       (3, 2, 'cnguyen', '2020-02-01', NULL),
+       (4, 3, 'oktomas', '2020-02-01', NULL);
+
+INSERT
+INTO APPLICATION(ID, NAME, IDENTIFIER)
+VALUES (1, 'Core Application', 'CORE01'),
+       (2, 'Front end', 'FRONT01');
+
+INSERT
+INTO REPO (ID, NAME, ID_APPLICATION, DATETIME_CREATED, DATETIME_SUPERSEDED)
+VALUES (1, 1, 'REPO01', '2020-01-15', NULL),
+       (2, 2, 'UI-BASE', '2020-01-22', NULL),
+       (3, 1, 'MYPOC', '2020-01-23', NULL);
+
+INSERT
+INTO MAP_PRINCIPAL_REPO(ID, ID_PRINCIPAL, ID_REPO, PERMISSION, DATETIME_CREATED, DATETIME_SUPERSEDED)
+VALUES (1, 1, 1, 'WRITE', '2020-01-15', '2020-01-20'),
+       (2, 1, 1, 'ADMIN', '2020-01-20', NULL),
+       (3, 2, 1, 'WRITE', '2020-01-20', NULL),
+       (4, 1, 2, 'ADMIN', '2020-01-22', NULL),
+       (5, 1, 3, 'ADMIN', '2020-02-23', NULL),
+       (6, 3, 1, 'READ', '2020-02-27', NULL),
+       (7, 3, 2, 'READ', '2020-02-27', NULL),
+       (8, 3, 3, 'READ', '2020-02-27', NULL),
+       (9, 4, 1, 'WRITE', '2020-02-27', NULL),
+       (9, 4, 2, 'WRITE', '2020-02-27', NULL);

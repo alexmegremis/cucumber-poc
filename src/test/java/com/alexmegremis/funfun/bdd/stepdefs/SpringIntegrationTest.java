@@ -1,24 +1,15 @@
-package com.alexmegremis.funfun;
+package com.alexmegremis.funfun.bdd.stepdefs;
 
-import com.alexmegremis.funfun.api.ResponseDTO;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.junit.Cucumber;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
-@SpringBootTest (classes = FunfunApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ContextConfiguration
-public class SpringIntegrationTest {
+public abstract class SpringIntegrationTest {
 
     protected ResponseEntity lastResponse;
 
@@ -28,7 +19,7 @@ public class SpringIntegrationTest {
     @Autowired
     protected RestTemplate restTemplate;
 
-    public void doGet(final String path, final String... variables) {
+    public void doGet(final Class responseType, final String path, final String... variables) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path(path);
 
         if (! Arrays.isNullOrEmpty(variables)) {
@@ -38,18 +29,16 @@ public class SpringIntegrationTest {
         }
 
         log.info(">>> About to call : " + uriComponentsBuilder.toUriString());
-        lastResponse = restTemplate.getForEntity(uriComponentsBuilder.build().toUri(), ResponseDTO.class);
+        lastResponse = restTemplate.getForEntity(uriComponentsBuilder.build().toUri(), responseType);
     }
 
-    @Before
-    private void setUp() {
-        lastResponse = null;
+    public void setUp() throws Throwable {
         log.info(">>> In before");
+        lastResponse = null;
     }
 
-    @After
-    private void tearDown() {
-        lastResponse = null;
+    public void tearDown() throws Throwable {
         log.info(">>> In after");
+        lastResponse = null;
     }
 }

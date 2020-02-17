@@ -1,13 +1,12 @@
-package com.alexmegremis.funfun;
+package com.alexmegremis.funfun.bdd.stepdefs;
 
 import com.alexmegremis.funfun.persistence.PersonEntity;
 import com.alexmegremis.funfun.persistence.PersonRepository;
-import cucumber.api.CucumberOptions;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.*;
-import cucumber.api.junit.Cucumber;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.ScriptRunner;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -21,15 +20,35 @@ import static org.hamcrest.Matchers.is;
 
 @Slf4j
 //@RunWith (Cucumber.class)
-@CucumberOptions (features = "src/test/resources/DB.feature")
-public class DBStepDefs {//extends SpringIntegrationTest {
+//@CucumberOptions (features = "src/test/resources/DB.feature")
+public class DBStepDefs extends SpringIntegrationTest {
 
     private Long                   rowCount = 0l;
     private Optional<PersonEntity> person;
-
+    private Connection             conn;
+    private ScriptRunner           scriptRunner;
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Before
+    public void setUp() throws Throwable {
+        super.setUp();
+
+        DriverManager.registerDriver(new org.h2.Driver());
+        conn = DriverManager.getConnection(url, "sa", null);
+        log.info(">>> Connection established");
+        scriptRunner = new ScriptRunner(conn);
+    }
+
+    @After
+    public void tearDown() throws Throwable {
+        super.tearDown();
+
+        conn.close();
+        log.info(">>> Connection closed");
+        scriptRunner = null;
+    }
 
     @Value ("${spring.datasource.url}")
     private String url;
@@ -44,18 +63,22 @@ public class DBStepDefs {//extends SpringIntegrationTest {
         assertThat("DB is empty", rowCount > 0);
     }
 
-    @Given ("^The DB has loaded (.*) and (.*)$")
-    public void theDBHasLoadedScripts(final String schemaFile, final String dataFile) throws Throwable {
-        DriverManager.registerDriver(new org.h2.Driver());
-        Connection conn = DriverManager.getConnection(url, "sa", null);
-        log.info(">>> Connection established");
-        ScriptRunner sc = new ScriptRunner(conn);
+    @Given ("^The DB was reset$")
+    public void theDBWasReset() throws Throwable {
+        runScript("/reset.sql");
+        runScript("/schemaComplete.sql");
+    }
 
-        Reader schemaReader = new BufferedReader(new FileReader("/Volumes/Development/Projects/funfun/src/test/resources/" + schemaFile));
-        Reader dataReader   = new BufferedReader(new FileReader("/Volumes/Development/Projects/funfun/src/test/resources/" + dataFile));
+    @Given ("^The DB has loaded (.*)$")
+    public void theDBHasLoadedScript(final String prefix) throws Throwable {
 
-        sc.runScript(schemaReader);
-        sc.runScript(dataReader);
+        runScript("/" + prefix + "Data.sql");
+    }
+
+    public void runScript(final String name) throws IOException {
+        InputStream inputStream = this.getClass().getResourceAsStream(name);
+        Reader      reader      = new BufferedReader(new InputStreamReader(inputStream));
+        scriptRunner.runScript(reader);
     }
 
     @When ("^The client gets row with ID (.*)$")
@@ -66,6 +89,11 @@ public class DBStepDefs {//extends SpringIntegrationTest {
     @Then ("^a row is returned$")
     public void aRowIsReturned() {
         assertThat("person was not found ", person.isPresent());
+    }
+
+    @Then ("^a row is not returned$")
+    public void aRowIsNotReturned() {
+        assertThat("person was not found ", !person.isPresent());
     }
 
     @And ("^The person has nameFirst (.*) and nameLast (.*)$")

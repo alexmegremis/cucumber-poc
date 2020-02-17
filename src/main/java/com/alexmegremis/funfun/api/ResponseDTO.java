@@ -4,7 +4,7 @@ import com.alexmegremis.funfun.persistence.PersonEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
