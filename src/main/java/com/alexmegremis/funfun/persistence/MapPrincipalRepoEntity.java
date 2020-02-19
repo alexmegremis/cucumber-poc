@@ -27,7 +27,7 @@ public class MapPrincipalRepoEntity {
     @Column (name = "PERMISSION")
     private String permission;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "ID_REPO", updatable = false, insertable = false)
 //    @Filter (name = "ApplicationFilter", condition = "WHERE NAME=:ApplicationFilterParam")
     private RepoEntity repo;

@@ -32,13 +32,13 @@ public class PrincipalEntity {
     private Date datetimeSuperseded;
 
     @JsonBackReference
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "ID_PERSON_OWNER", insertable = false, updatable = false)
     private PersonEntity owner;
 
 
 //    @Filter (name = "ApplicationFilter", condition = "WHERE NAME=:ApplicationFilterParam")
-    @OneToMany (fetch = FetchType.EAGER, mappedBy = "principal")
+    @OneToMany (fetch = FetchType.LAZY, mappedBy = "principal")
     private Set<MapPrincipalRepoEntity> repoMappings;
 
     @Override

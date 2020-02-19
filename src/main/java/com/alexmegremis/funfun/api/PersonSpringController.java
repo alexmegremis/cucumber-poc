@@ -32,8 +32,8 @@ public class PersonSpringController {
         ApplicationEntity      exampleApplication = ApplicationEntity.builder().name(applicationName).build();
         RepoEntity             exampleRepo        = RepoEntity.builder().application(exampleApplication).build();
         MapPrincipalRepoEntity exampleRepoMapping = MapPrincipalRepoEntity.builder().repo(exampleRepo).build();
-        PrincipalEntity        examplePrincipal   = PrincipalEntity.builder().repoMappings(Set.of(exampleRepoMapping)).build();
-        PersonEntity           examplePerson      = PersonEntity.builder().nameFirst(nameFirst).nameLast(nameLast).id(id).principals(Set.of(examplePrincipal)).build();
+        PrincipalEntity        examplePrincipal   = PrincipalEntity.builder().repoMappings(ProducingCollection.setOf(exampleRepoMapping)).build();
+        PersonEntity           examplePerson      = PersonEntity.builder().nameFirst(nameFirst).nameLast(nameLast).id(id).principals(ProducingCollection.setOf(examplePrincipal)).build();
         Example<PersonEntity>  example            = Example.of(examplePerson);
         Set<PersonEntity>      allByExample       = new HashSet(personRepository.findAll(example));
 
