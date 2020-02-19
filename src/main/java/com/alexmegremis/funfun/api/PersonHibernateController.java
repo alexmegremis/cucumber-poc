@@ -46,13 +46,13 @@ public class PersonHibernateController {
 
         CriteriaQuery<ApplicationEntity> appCQ = builder.createQuery(ApplicationEntity.class);
         Root<ApplicationEntity>               root = appCQ.from(ApplicationEntity.class);
-        CriteriaBuilder.In<ApplicationEntity> in
-        appCQ.select(root).where(builder.in);
+//        CriteriaBuilder.In<ApplicationEntity> in
+//        appCQ.select(root).where(builder.in);
 
 
-        Set<ApplicationEntity>      applications = applicationRepository.findAllByIdentifierIn(applicationName);
-        Set<RepoEntity>             repos        = repoRepository.findAllByApplicationIn(applications);
-        Set<MapPrincipalRepoEntity> repoMappings = mapPrincipalRepoRepository.findAllByRepoInAndPrincipalIn(repos);
+//        Set<ApplicationEntity>      applications = applicationRepository.findAllByIdentifierIn(applicationName);
+//        Set<RepoEntity>             repos        = repoRepository.findAllByApplicationIn(applications);
+//        Set<MapPrincipalRepoEntity> repoMappings = mapPrincipalRepoRepository.findAllByRepoInAndPrincipalIn(repos);
 
         ApplicationEntity exampleApplication = ApplicationEntity.builder().build();
         RepoEntity        exampleRepo        = RepoEntity.builder().application(exampleApplication).build();

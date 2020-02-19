@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.restart.RestartEndpoint;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -11,7 +13,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 public abstract class SpringIntegrationTest {
 
+    private static ConfigurableApplicationContext context;
+
     protected ResponseEntity lastResponse;
+//
+//    @Autowired
+//    private RestartEndpoint restartEndpoint;
+//
+//    protected void restartContext() {
+//        restartEndpoint.restart();
+//    }
 
     @Value ("${server.port}")
     private Integer port;
