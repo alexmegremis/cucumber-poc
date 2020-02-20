@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -37,8 +40,20 @@ public class APIStepDefs extends SpringIntegrationTest {
     }
 
     @Given ("^the client calls (.*) with nameFirst (.*) and nameLast (.*)$")
-    public void theClientCallsApiWithNameFirstAndNameLast(final String path, final String nameFirst, final String nameLast) {
+    public void theClientCallsApiWithNameFirstAndNameLast(final String foo, final String path, final String nameFirst, final String nameLast) {
         doGet(PersonEntity[].class, path, "nameFirst", nameFirst, "nameLast", nameLast);
+        System.out.printf("foo");
+    }
+
+//    @Given ("^the client calls (.*) endpoint$")
+//    public void callEndpoint(final String foo, final List<String> path) {
+//        System.out.printf("foo");
+//        //
+//    }
+
+    @Given ("^with nameFirst (.*) and nameLast (.*)$")
+    public void withNameFirstAndNameLast(final String nameFirst, final String nameLast) {
+//        doGet(PersonEntity[].class, path, "nameFirst", nameFirst, "nameLast", nameLast);
     }
 
     @And ("^the person is with nameFirst (.*) and nameLast (.*)$")

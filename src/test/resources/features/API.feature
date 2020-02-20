@@ -20,30 +20,26 @@ Feature: The Greeting API works
 #      | Alex      | Megremis |
 #      | Watson    | Basset   |
 
-  Scenario Outline: client makes call to GET /api/v1/person/spring/find with a name
-    Given The context restarts
-    And The DB was reset
-    And  The DB has loaded base
-    When the client calls /api/v1/person/spring/find with nameFirst <nameFirst> and nameLast <nameLast>
-    Then the client receives status code of 200
-    And the person is with nameFirst <nameFirst> and nameLast <nameLast>
-
-    Examples:
-      | id | nameFirst | nameLast |
-      | 1  | Alex      | Megremis |
-      | 2  | Zoe       | Megremis |
-      | 3  | Thomas    | Megremis |
-      | 4  | Watson    | Megremis |
-      | 5  | Olive     | Megremis |
+#  Scenario Outline: client makes call to GET /api/v1/person/spring/find with a name
+#    When the client calls /api/v1/person/spring/find with nameFirst <nameFirst> and nameLast <nameLast>
+#    Then the client receives status code of 200
+#    And the person is with nameFirst <nameFirst> and nameLast <nameLast>
+#
+#    Examples:
+#      | id | nameFirst | nameLast |
+#      | 1  | Alex      | Megremis |
+#      | 2  | Zoe       | Megremis |
+#      | 3  | Thomas    | Megremis |
+#      | 4  | Watson    | Megremis |
+#      | 5  | Olive     | Megremis |
 
   Scenario Outline: client makes call to GET /api/v1/person/hibernate/find with a name
-    Given The context restarts
-    And The DB was reset
-    And  The DB has loaded base
-    When the client calls /api/v1/person/hibernate/find with nameFirst <nameFirst> and nameLast <nameLast>
+    When the client calls <url> with nameFirst <nameFirst> and nameLast <nameLast>
+      | url                           |
+      | /api/v1/person/spring/find    |
+      | /api/v1/person/hibernate/find |
     Then the client receives status code of 200
     And the person is with nameFirst <nameFirst> and nameLast <nameLast>
-
     Examples:
       | id | nameFirst | nameLast |
       | 1  | Alex      | Megremis |
@@ -51,3 +47,4 @@ Feature: The Greeting API works
       | 3  | Thomas    | Megremis |
       | 4  | Watson    | Megremis |
       | 5  | Olive     | Megremis |
+      | 6  | Dimitrios | Megremis |
