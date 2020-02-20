@@ -1,0 +1,1 @@
+java -cp ~/.m2/repository/com/h2database/h2/1.4.200/h2-1.4.200.jar org.h2.tools.Server -tcp -web -webDaemon -webAdminPassword  "welcome1" -ifNotExists -tcpPort 9101 -webPort100 -webAllowOthers -tcpAllowOthers -baseDir `pwd`
