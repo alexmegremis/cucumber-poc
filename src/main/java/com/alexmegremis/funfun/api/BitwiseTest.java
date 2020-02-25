@@ -1,5 +1,6 @@
 package com.alexmegremis.funfun.api;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 
 public class BitwiseTest {
@@ -12,7 +13,7 @@ public class BitwiseTest {
 
         EnumSet<PERMISSIONS> permissions = EnumSet.of(PERMISSIONS.READ, PERMISSIONS.CREATE_BRANCH, PERMISSIONS.COMMENT);
 
-        Integer sum = permissions.stream().map(PERMISSIONS :: ordinal).reduce(0, (a, b) -> a |= (1 << b));
+        Integer sum = getPermission(permissions);
         System.out.println(">>> " + sum);
 
         System.out.println(hasPermission(sum, PERMISSIONS.READ));
@@ -24,5 +25,10 @@ public class BitwiseTest {
 
     static boolean hasPermission(final Integer sum, final PERMISSIONS permission) {
         return (sum & 1 << permission.ordinal()) > 0;
+    }
+
+    static Integer getPermission(EnumSet<PERMISSIONS> permissions) {
+        Integer result = permissions.stream().map(PERMISSIONS :: ordinal).reduce(0, (a, b) -> a |= (1 << b));
+        return result;
     }
 }

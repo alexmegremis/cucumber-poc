@@ -2,7 +2,7 @@ package com.alexmegremis.funfun.bdd.stepdefs;
 
 import com.alexmegremis.funfun.api.ResponseDTO;
 import com.alexmegremis.funfun.persistence.PersonEntity;
-import cucumber.api.java.en.*;
+import io.cucumber.java.en.*;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 @Slf4j
 public class APIStepDefs extends SpringIntegrationTest {
 
-    @Given ("the client calls /api/v1/hello$")
+    @Given("the client calls /api/v1/hello$")
     public void clientCallsDefaultHello() throws Throwable {
         doGet(ResponseDTO.class,"/api/v1/hello");
     }
@@ -27,13 +27,13 @@ public class APIStepDefs extends SpringIntegrationTest {
         doGet(ResponseDTO.class, "/api/v1/hello", "name", name);
     }
 
-    @Then ("^the client receives status code of (\\d+)$")
+    @Then("^the client receives status code of (\\d+)$")
     public void clientReceivesStatusCodeOf(int statusCode) throws Throwable {
         final HttpStatus currentStatusCode = lastResponse.getStatusCode();
         assertThat("status code is incorrect : " + currentStatusCode, currentStatusCode.value(), is(statusCode));
     }
 
-    @And ("^the response says (.*)$")
+    @And("^the response says (.*)$")
     public void theClientReceivesTheGreeting(final String message) throws Throwable {
         ResponseDTO response = (ResponseDTO) lastResponse.getBody();
         assertThat("response message was not correct : " + message, response.getMessage(), equalTo(message));
