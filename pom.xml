@@ -119,6 +119,12 @@
             <groupId>org.apache.ibatis</groupId>
             <artifactId>ibatis-core</artifactId>
             <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -160,33 +166,33 @@
                 </configuration>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>2.19.1</version>-->
-<!--                <configuration>-->
-<!--                    <skipTests>${skipUTs}</skipTests>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-failsafe-plugin</artifactId>-->
-<!--                <version>2.19.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>run-integration-tests</id>-->
-<!--                        <phase>integration-test</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>integration-test</goal>-->
-<!--                            <goal>verify</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <configuration>-->
-<!--                    <skipTests>${skipTests}</skipTests>-->
-<!--                    <skipITs>${skipITs}</skipITs>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-surefire-plugin</artifactId>-->
+            <!--                <version>2.19.1</version>-->
+            <!--                <configuration>-->
+            <!--                    <skipTests>${skipUTs}</skipTests>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-failsafe-plugin</artifactId>-->
+            <!--                <version>2.19.1</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>run-integration-tests</id>-->
+            <!--                        <phase>integration-test</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>integration-test</goal>-->
+            <!--                            <goal>verify</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--                <configuration>-->
+            <!--                    <skipTests>${skipTests}</skipTests>-->
+            <!--                    <skipITs>${skipITs}</skipITs>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

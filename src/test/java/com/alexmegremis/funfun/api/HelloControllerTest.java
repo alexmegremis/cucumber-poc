@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -41,7 +42,32 @@ public class HelloControllerTest {
     }
 
     @Test
-    public void helloYou() throws Exception {
-        mockMvc.perform(get("/api/v1/hello")).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("Hello")));
+    public void hello() throws Exception {
+        mockMvc.perform(get("/api/v1/hello")).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("Hello world")));
+    }
+
+    @Test
+    public void hello_name() throws Exception {
+        mockMvc.perform(get("/api/v1/hello").param("name", "Alex"))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().string(containsString("Hello Alex")));
+        mockMvc.perform(get("/api/v1/hello").param("name", "George"))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().string(not(containsString("Hello Alex"))));
+    }
+
+    @Test
+    public void helloYou_name() throws Exception {
+        mockMvc.perform(get("/api/v1/helloYou").param("nameFirst", "Alex").param("nameLast", "Megremis"))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().string(containsString("Hello Alex")));
+        mockMvc.perform(get("/api/v1/helloYou").param("nameFirst", "Thomas").param("nameLast", "Megremis"))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().string(containsString("Hello Thomas")))
+               .andExpect(content().string(containsString("Thomas-io")));
     }
 }
