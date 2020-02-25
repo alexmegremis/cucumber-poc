@@ -19,8 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @Slf4j
-//@RunWith (Cucumber.class)
-//@CucumberOptions (features = "src/test/resources/DB.feature")
 public class DBStepDefs extends SpringIntegrationTest {
 
     private Long                   rowCount = 0l;

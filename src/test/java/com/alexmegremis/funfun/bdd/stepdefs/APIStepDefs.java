@@ -39,9 +39,9 @@ public class APIStepDefs extends SpringIntegrationTest {
         assertThat("response message was not correct : " + message, response.getMessage(), equalTo(message));
     }
 
-    @Given ("^the client calls (.*) with nameFirst (.*) and nameLast (.*)$")
-    public void theClientCallsApiWithNameFirstAndNameLast(final String foo, final String path, final String nameFirst, final String nameLast) {
-        doGet(PersonEntity[].class, path, "nameFirst", nameFirst, "nameLast", nameLast);
+    @Given ("^the client calls (.*) with nameFirst (.*), nameLast (.*), and applicationName (.*)$")
+    public void theClientCallsApiWithNameFirstAndNameLast(final String path, final String nameFirst, final String nameLast, final String applicationName) {
+        doGet(PersonEntity[].class, path, "nameFirst", nameFirst, "nameLast", nameLast, "applicationName", applicationName);
         System.out.printf("foo");
     }
 
