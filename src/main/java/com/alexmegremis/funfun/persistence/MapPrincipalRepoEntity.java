@@ -3,9 +3,11 @@ package com.alexmegremis.funfun.persistence;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import java.util.Date;
 
 @Entity (name = "MAP_PRINCIPAL_REPO")
 @Data
@@ -26,6 +28,17 @@ public class MapPrincipalRepoEntity {
 
     @Column (name = "PERMISSION")
     private String permission;
+
+    @Column (name = "PERMISSION_BITS")
+    private Integer permissionBits;
+
+    @Column (name = "DATETIME_CREATED")
+    @CreationTimestamp
+    private Date datetimeCreated;
+
+    @Column (name = "DATETIME_SUPERSEDED")
+    @UpdateTimestamp
+    private Date datetimeSuperseded;
 
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "ID_REPO", updatable = false, insertable = false)

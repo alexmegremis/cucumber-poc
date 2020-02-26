@@ -76,6 +76,7 @@ public class DBStepDefs extends SpringIntegrationTest {
     public void runScript(final String name) throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream(name);
         Reader      reader      = new BufferedReader(new InputStreamReader(inputStream));
+        scriptRunner.setLogWriter(null);
         scriptRunner.runScript(reader);
     }
 

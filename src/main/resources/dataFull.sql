@@ -34,9 +34,11 @@
 --     ID_PRINCIPAL        INTEGER      NOT NULL,
 --     ID_REPO             INTEGER      NOT NULL,
 --     PERMISSION          VARCHAR(256) NOT NULL,
+--     PERMISSION_BITS     INTEGER      NOT NULL,
 --     DATETIME_CREATED    DATETIME     NOT NULL,
 --     DATETIME_SUPERSEDED DATETIME
 -- );
+--
 
 
 INSERT
@@ -66,14 +68,14 @@ VALUES (1, 1, 'REPO01', '2020-01-15', NULL),
        (3, 1, 'MYPOC', '2020-01-23', NULL);
 
 INSERT
-INTO MAP_PRINCIPAL_REPO(ID, ID_PRINCIPAL, ID_REPO, PERMISSION, DATETIME_CREATED, DATETIME_SUPERSEDED)
-VALUES (1, 1, 1, 'WRITE', '2020-01-15', '2020-01-20'),
-       (2, 1, 1, 'ADMIN', '2020-01-20', NULL),
-       (3, 2, 1, 'WRITE', '2020-01-20', NULL),
-       (4, 1, 2, 'ADMIN', '2020-01-22', NULL),
-       (5, 1, 3, 'ADMIN', '2020-02-23', NULL),
-       (6, 3, 1, 'READ', '2020-02-27', NULL),
-       (7, 3, 2, 'READ', '2020-02-27', NULL),
-       (8, 3, 3, 'READ', '2020-02-27', NULL),
-       (9, 4, 1, 'WRITE', '2020-02-27', NULL),
-       (10, 4, 2, 'WRITE', '2020-02-27', NULL);
+INTO MAP_PRINCIPAL_REPO(ID, ID_PRINCIPAL, ID_REPO, PERMISSION, PERMISSION_BITS, DATETIME_CREATED, DATETIME_SUPERSEDED)
+VALUES (1, 1, 1, 'WRITE', 1, '2020-01-15', '2020-01-20'),
+       (2, 1, 1, 'ADMIN', 1, '2020-01-20', NULL),
+       (3, 2, 1, 'WRITE', 1, '2020-01-20', NULL),
+       (4, 1, 2, 'ADMIN', 1, '2020-01-22', NULL),
+       (5, 1, 3, 'ADMIN', 1, '2020-02-23', NULL),
+       (6, 3, 1, 'READ',  1, '2020-02-27', NULL),
+       (7, 3, 2, 'READ',  1, '2020-02-27', NULL),
+       (8, 3, 3, 'READ',  1, '2020-02-27', NULL),
+       (9, 4, 1, 'WRITE', 1, '2020-02-27', NULL),
+       (10, 4, 2, 'WRITE',1,  '2020-02-27', NULL);

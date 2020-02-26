@@ -3,9 +3,10 @@ package com.alexmegremis.funfun.persistence;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.util.*;
 
 @Entity (name = "PRINCIPAL")
@@ -26,9 +27,11 @@ public class PrincipalEntity {
     private Integer idPersonOwner;
 
     @Column (name = "DATETIME_CREATED")
+    @CreationTimestamp
     private Date datetimeCreated;
 
     @Column (name = "DATETIME_SUPERSEDED")
+    @UpdateTimestamp
     private Date datetimeSuperseded;
 
     @JsonBackReference

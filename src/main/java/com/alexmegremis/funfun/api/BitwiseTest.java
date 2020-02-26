@@ -1,11 +1,15 @@
 package com.alexmegremis.funfun.api;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 
 public class BitwiseTest {
 
-    enum PERMISSIONS {
+    public static final EnumSet<PERMISSIONS> P_WRITE = EnumSet.of(PERMISSIONS.READ, PERMISSIONS.CLONE, PERMISSIONS.WRITE, PERMISSIONS.CREATE_BRANCH, PERMISSIONS.COMMENT,
+                                                                  PERMISSIONS.DELETE_BRANCH);
+    public static final EnumSet<PERMISSIONS> P_MIXED = EnumSet.of(PERMISSIONS.READ, PERMISSIONS.CLONE, PERMISSIONS.CREATE_BRANCH, PERMISSIONS.COMMENT);
+    public static final EnumSet<PERMISSIONS> P_READ  = EnumSet.of(PERMISSIONS.READ, PERMISSIONS.CLONE);
+
+    public enum PERMISSIONS {
         READ, WRITE, ADMIN, CREATE_REPO, DELETE_REPO, CREATE_BRANCH, DELETE_BRANCH, COMMENT, CREATE_TAG, CLONE
     }
 
@@ -23,11 +27,11 @@ public class BitwiseTest {
         System.out.println(hasPermission(sum, PERMISSIONS.ADMIN));
     }
 
-    static boolean hasPermission(final Integer sum, final PERMISSIONS permission) {
+    public static boolean hasPermission(final Integer sum, final PERMISSIONS permission) {
         return (sum & 1 << permission.ordinal()) > 0;
     }
 
-    static Integer getPermission(EnumSet<PERMISSIONS> permissions) {
+    public static Integer getPermission(EnumSet<PERMISSIONS> permissions) {
         Integer result = permissions.stream().map(PERMISSIONS :: ordinal).reduce(0, (a, b) -> a |= (1 << b));
         return result;
     }

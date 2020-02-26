@@ -1,14 +1,11 @@
 package com.alexmegremis.funfun.api;
 
 import com.alexmegremis.funfun.persistence.*;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.util.*;
 
 @RestController
@@ -17,9 +14,6 @@ public class PersonSpringController {
 
     @Autowired
     private PersonRepository personRepository;
-
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
 
     @GetMapping (value = "find", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -33,21 +27,15 @@ public class PersonSpringController {
         RepoEntity             exampleRepo        = RepoEntity.builder().application(exampleApplication).build();
         MapPrincipalRepoEntity exampleRepoMapping = MapPrincipalRepoEntity.builder().repo(exampleRepo).build();
         PrincipalEntity        examplePrincipal   = PrincipalEntity.builder().repoMappings(ProducingCollection.setOf(exampleRepoMapping)).build();
-        PersonEntity           examplePerson      = PersonEntity.builder().nameFirst(nameFirst).nameLast(nameLast).id(id).principals(ProducingCollection.setOf(examplePrincipal)).build();
+        PersonEntity           examplePerson      = PersonEntity.builder()
+                                                                .nameFirst(nameFirst)
+                                                                .nameLast(nameLast)
+                                                                .id(id)
+                                                                .principals(ProducingCollection.setOf(examplePrincipal))
+                                                                .build();
         Example<PersonEntity>  example            = Example.of(examplePerson);
         Set<PersonEntity>      allByExample       = new HashSet(personRepository.findAll(example));
 
-//        session.createCriteria(PersonEntity.class);
-//
-//
-//        CriteriaQuery<PersonEntity> query = entityManager.getCriteriaBuilder().createQuery(PersonEntity.class);
-//
-//        Root<PersonEntity> from = query.from(PersonEntity.class);
-//        query.where(entityManager.getCriteriaBuilder().equal())
-//
-//        entityManager.
-//
-//                Set<PersonEntity> allByNameFirst = personRepository.findAllByNameFirst(name);
         return ResponseEntity.of(Optional.ofNullable(allByExample));
     }
 

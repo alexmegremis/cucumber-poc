@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.restart.RestartEndpoint;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.*;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 public abstract class SpringIntegrationTest {
@@ -16,13 +17,6 @@ public abstract class SpringIntegrationTest {
     private static ConfigurableApplicationContext context;
 
     protected ResponseEntity lastResponse;
-//
-//    @Autowired
-//    private RestartEndpoint restartEndpoint;
-//
-//    protected void restartContext() {
-//        restartEndpoint.restart();
-//    }
 
     @Value ("${server.port}")
     private Integer port;
@@ -30,17 +24,25 @@ public abstract class SpringIntegrationTest {
     @Autowired
     protected RestTemplate restTemplate;
 
-    public void doGet(final Class responseType, final String path, final String... variables) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port).path(path);
+    public <T> void doGet(final Class<T> responseType, final String path, final String... variables) {
+
+        UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
+        UriBuilder        uriBuilder        = uriBuilderFactory.builder();
+        uriBuilder.scheme("http").host("localhost").port(port).path(path);
 
         if (! Arrays.isNullOrEmpty(variables)) {
             for (int i = 0; i < variables.length; i++) {
-                uriComponentsBuilder.queryParam(variables[i], variables[++ i]);
+                uriBuilder.queryParam(variables[i], variables[++ i]);
             }
         }
 
-        log.info(">>> About to call : " + uriComponentsBuilder.toUriString());
-        lastResponse = restTemplate.getForEntity(uriComponentsBuilder.build().toUri(), responseType);
+        log.info(">>> About to call : " + uriBuilderFactory.toString());
+        System.out.println(">>> About to call : " + uriBuilderFactory.toString());
+
+        final Mono<ResponseEntity<T>> mono = WebClient.create().get().uri(uriBuilder.build()).exchange().flatMap(r -> r.toEntity(responseType));
+
+        lastResponse = mono.block();
+        System.out.println(">>> foo");
     }
 
     public void setUp() throws Throwable {
