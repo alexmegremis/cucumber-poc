@@ -2,13 +2,16 @@ package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
 import com.alexmegremis.cucumberPOC.persistence.PersonEntity;
 import com.alexmegremis.cucumberPOC.persistence.PersonRepository;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
+import io.cucumber.java.*;
 import io.cucumber.java.en.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.support.Repositories;
 
 import java.io.*;
 import java.sql.Connection;
@@ -27,7 +30,24 @@ public class DBStepDefs extends SpringIntegrationTest {
     private ScriptRunner           scriptRunner;
 
     @Autowired
-    private PersonRepository personRepository;
+    private ApplicationContext applicationContext;
+
+    enum CountRule {
+        SOME,
+        OVER,
+        EXACTLY,
+        UNDER
+    }
+
+    @ParameterType("(some|exactly|over|under)")
+    public CountRule countRule(final String count) {
+        return CountRule.valueOf(count.toUpperCase());
+    }
+
+    @ParameterType("([A-Za-z0-9-_.,]*)")
+    public String[] tableNames(final String commaDelimitedTableNames) {
+        return ArrayUtils.toArray(commaDelimitedTableNames.split(","));
+    }
 
     @Before
     public void setUp() throws Throwable {
@@ -48,11 +68,18 @@ public class DBStepDefs extends SpringIntegrationTest {
         scriptRunner = null;
     }
 
+    public <T> JpaRepository<T, Integer> getRepository(final Class<T> clazz) {
+        Repositories repositories = new Repositories(applicationContext);
+        final Optional<Object> result = repositories.getRepositoryFor(clazz);
+        return (JpaRepository<T, Integer>) result.get();
+    }
+
     @Value("${spring.datasource.url}")
     private String url;
 
     @Given("The client gets a row count$")
     public void clientCallsDefaultHello() throws Throwable {
+        final JpaRepository<PersonEntity, Integer> personRepository = getRepository(PersonEntity.class);
         rowCount = personRepository.count();
     }
 
@@ -82,7 +109,7 @@ public class DBStepDefs extends SpringIntegrationTest {
 
     @When("^The client gets row with ID (.*)$")
     public void theClientGetsRowWithID(final Integer id) {
-        person = personRepository.findById(id);
+        person = getRepository(PersonEntity.class).findById(id);
     }
 
     @Then("^a row is returned$")
@@ -99,5 +126,9 @@ public class DBStepDefs extends SpringIntegrationTest {
     public void thePersonHasNameFirsAndNameLast(final String nameFirst, final String nameLast) {
         assertThat("nameFirst was not " + nameFirst, person.get().getNameFirst(), is(nameFirst));
         assertThat("nameLast was not " + nameLast, person.get().getNameLast(), is(nameLast));
+    }
+
+    @Then ("table(s) {tableNames} have {countRule} {int} rows")
+    public void tablesHaveRows(final String[] tables, final String rule, final Integer arg0) {
     }
 }

@@ -38,8 +38,6 @@ public class PrincipalEntity {
     @JoinColumn (name = "ID_PERSON_OWNER", insertable = false, updatable = false)
     private PersonEntity owner;
 
-
-//    @Filter (name = "ApplicationFilter", condition = "WHERE NAME=:ApplicationFilterParam")
     @OneToMany (fetch = FetchType.LAZY, mappedBy = "principal")
     private Set<MapPrincipalRepoEntity> repoMappings;
 

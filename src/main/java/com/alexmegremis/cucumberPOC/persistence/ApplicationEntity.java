@@ -27,7 +27,7 @@ public class ApplicationEntity {
 
     @JsonBackReference
     @JsonIgnoreProperties ({"hibernateLazyInitializer", "handler"})
-    @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
+    @OneToMany (mappedBy = "application", fetch = FetchType.LAZY)
     private Set<RepoEntity> repos;
 
     @Override
