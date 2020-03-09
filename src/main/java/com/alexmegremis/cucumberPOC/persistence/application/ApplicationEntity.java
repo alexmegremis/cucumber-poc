@@ -1,4 +1,4 @@
-package com.alexmegremis.cucumberPOC.persistence;
+package com.alexmegremis.cucumberPOC.persistence.application;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

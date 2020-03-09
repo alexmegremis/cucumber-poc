@@ -1,6 +1,6 @@
 package com.alexmegremis.cucumberPOC.api;
 
-import com.alexmegremis.cucumberPOC.persistence.PersonEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
 import lombok.*;
 
 @Builder

@@ -1,6 +1,6 @@
 package com.alexmegremis.cucumberPOC.api;
 
-import com.alexmegremis.cucumberPOC.persistence.*;
+import com.alexmegremis.cucumberPOC.persistence.application.*;
 import org.hibernate.*;
 import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import java.util.*;
 public class PersonHibernateController {
 
     @Autowired
-    private PersonRepository           personRepository;
+    private PersonRepository      personRepository;
     @Autowired
-    private ApplicationRepository      applicationRepository;
+    private ApplicationRepository applicationRepository;
     @Autowired
     private RepoRepository             repoRepository;
     @Autowired

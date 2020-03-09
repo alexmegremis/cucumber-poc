@@ -1,9 +1,7 @@
 package com.alexmegremis.cucumberPOC.api;
 
-import com.alexmegremis.cucumberPOC.persistence.PersonEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;

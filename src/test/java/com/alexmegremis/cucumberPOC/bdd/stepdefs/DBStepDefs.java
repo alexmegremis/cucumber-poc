@@ -1,6 +1,7 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
-import com.alexmegremis.cucumberPOC.persistence.*;
+import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PrincipalEntity;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.*;
 import io.cucumber.java.en.*;
@@ -20,7 +21,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -37,8 +37,8 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
     private ApplicationContext applicationContext;
 
     public DBStepDefs() {
-        Then ("local Person is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PersonEntity.class, dataTable));
-        Then ("local Principal is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PrincipalEntity.class, dataTable));
+        Then("local Person is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PersonEntity.class, dataTable));
+        Then("local Principal is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PrincipalEntity.class, dataTable));
         Then("global Person is found that looks like", (final DataTable dataTable) -> doHandleGlobalExamples(PersonEntity.class, globalPersons, dataTable));
     }
 
@@ -93,7 +93,7 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
         return (JpaRepository<T, Integer>) result.get();
     }
 
-    @Value("${spring.datasource.url}")
+    @Value("${spring.applicationdatasource.url}")
     private String url;
 
     @Given("The client gets a row count$")

@@ -1,4 +1,4 @@
-package com.alexmegremis.cucumberPOC.persistence;
+package com.alexmegremis.cucumberPOC.persistence.application;
 
 import lombok.*;
 import org.hibernate.annotations.*;

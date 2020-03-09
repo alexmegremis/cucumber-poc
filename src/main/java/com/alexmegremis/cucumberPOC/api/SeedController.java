@@ -1,6 +1,6 @@
 package com.alexmegremis.cucumberPOC.api;
 
-import com.alexmegremis.cucumberPOC.persistence.*;
+import com.alexmegremis.cucumberPOC.persistence.application.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 public class SeedController {
 
     @Autowired
-    private PersonRepository           personRepository;
+    private PersonRepository    personRepository;
     @Autowired
-    private PrincipalRepository        principalRepository;
+    private PrincipalRepository principalRepository;
     @Autowired
     private MapPrincipalRepoRepository mapPrincipalRepoRepository;
 

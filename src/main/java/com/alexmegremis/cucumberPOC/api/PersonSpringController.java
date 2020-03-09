@@ -1,6 +1,6 @@
 package com.alexmegremis.cucumberPOC.api;
 
-import com.alexmegremis.cucumberPOC.persistence.*;
+import com.alexmegremis.cucumberPOC.persistence.application.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.*;

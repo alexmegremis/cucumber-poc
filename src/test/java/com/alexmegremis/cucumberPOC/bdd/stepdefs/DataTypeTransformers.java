@@ -1,7 +1,7 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
-import com.alexmegremis.cucumberPOC.persistence.PersonEntity;
-import com.alexmegremis.cucumberPOC.persistence.PrincipalEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PrincipalEntity;
 import io.cucumber.java8.En;
 
 import java.util.Map;

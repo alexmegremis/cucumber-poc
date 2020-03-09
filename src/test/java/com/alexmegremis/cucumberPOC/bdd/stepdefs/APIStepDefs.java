@@ -1,7 +1,7 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
 import com.alexmegremis.cucumberPOC.api.ResponseDTO;
-import com.alexmegremis.cucumberPOC.persistence.PersonEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
 import io.cucumber.java.en.*;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;

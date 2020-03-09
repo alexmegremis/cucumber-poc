@@ -1,7 +1,7 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
-import com.alexmegremis.cucumberPOC.persistence.PersonEntity;
-import com.alexmegremis.cucumberPOC.persistence.PrincipalEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PrincipalEntity;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
 import lombok.extern.slf4j.Slf4j;

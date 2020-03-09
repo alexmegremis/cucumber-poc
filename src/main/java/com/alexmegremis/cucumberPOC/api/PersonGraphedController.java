@@ -1,6 +1,6 @@
 package com.alexmegremis.cucumberPOC.api;
 
-import com.alexmegremis.cucumberPOC.persistence.*;
+import com.alexmegremis.cucumberPOC.persistence.application.*;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -27,7 +27,7 @@ public class PersonGraphedController {
     private MapPrincipalRepoRepository mapPrincipalRepoRepository;
 
     @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    private EntityManagerFactory applicationEntityManager;
 
     @PersistenceContext
     private EntityManager em;

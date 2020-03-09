@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
-@EntityScan(basePackages = {"com.alexmegremis.cucumberPOC"})
-@EnableJpaRepositories
+//@EntityScan(basePackages = {"com.alexmegremis.cucumberPOC"})
+//@EnableJpaRepositories
 @SpringBootApplication
 public class CucumberPOCApplication {
 
