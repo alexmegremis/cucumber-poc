@@ -3,13 +3,13 @@ Feature: Ingest HR data into local DB.
   Background:
     Given HR ingestion
     And the DB was reset
-    And Person entities
+    And global Person entities
       | id | nameFirst | nameLast | email                      |
       | 1  | Alex      | Megremis | alex@alexmegremis.com      |
       |    | Alex      |          |                            |
       | 6  | Zoe       | Nguyen   | zoe@alexmegremis.com       |
       |    |           | Nguyen   |                            |
-    And Principal entities
+    And global Principal entities
       | id | name         | idPersonOwner | datetimeCreated | datetimeSuperseded |
       | 1  | alexmegremis | 1             | 2019-01-20      |                    |
       | 2  | amegremis    | 1             | 2019-01-30      | 2019-01-31         |

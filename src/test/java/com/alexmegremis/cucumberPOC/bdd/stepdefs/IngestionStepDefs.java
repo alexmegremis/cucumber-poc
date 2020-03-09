@@ -30,8 +30,8 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
 
     public IngestionStepDefs() {
 
-        Given("Person entities", (final DataTable personsDataTable) -> parseDataTable(PersonEntity.class, SpringIntegrationTest :: setGlobalPersons, personsDataTable));
-        Given("Principal entities", (final DataTable principalsDataTable) -> parseDataTable(PrincipalEntity.class, SpringIntegrationTest :: setGlobalPrincipals, principalsDataTable));
+        Given("global Person entities", (final DataTable personsDataTable) -> parseDataTable(PersonEntity.class, SpringIntegrationTest :: setGlobalPersons, personsDataTable));
+        Given("global Principal entities", (final DataTable principalsDataTable) -> parseDataTable(PrincipalEntity.class, SpringIntegrationTest :: setGlobalPrincipals, principalsDataTable));
 
         Given("^(.*) ingestion$", (final String ingestionType) -> {
             endpoint = endpoints.entrySet().stream().filter(e -> e.getKey().equals(ingestionType.toUpperCase())).findFirst().get();
