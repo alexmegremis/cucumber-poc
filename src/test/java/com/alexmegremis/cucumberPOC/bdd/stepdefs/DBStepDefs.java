@@ -1,28 +1,32 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
-import com.alexmegremis.cucumberPOC.persistence.PersonEntity;
-import com.alexmegremis.cucumberPOC.persistence.PersonRepository;
+import com.alexmegremis.cucumberPOC.persistence.*;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.*;
 import io.cucumber.java.en.*;
+import io.cucumber.java8.En;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.support.Repositories;
 
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @Slf4j
-public class DBStepDefs extends SpringIntegrationTest {
+public class DBStepDefs extends SpringIntegrationTest implements En {
 
     private Long                   rowCount = 0l;
     private Optional<PersonEntity> person;
@@ -32,19 +36,34 @@ public class DBStepDefs extends SpringIntegrationTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-    enum CountRule {
-        SOME,
-        OVER,
-        EXACTLY,
-        UNDER
+    public DBStepDefs() {
+        Then ("local Person is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PersonEntity.class, dataTable));
+        Then ("local Principal is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PrincipalEntity.class, dataTable));
+        Then("global Person is found that looks like", (final DataTable dataTable) -> doHandleGlobalExamples(PersonEntity.class, globalPersons, dataTable));
     }
 
-    @ParameterType("(some|exactly|over|under)")
-    public CountRule countRule(final String count) {
-        return CountRule.valueOf(count.toUpperCase());
+    private <T> void doParseLocalExamples(final Class<T> clazz, final DataTable dataTable) {
+        List<T> exampleEntities = dataTable.asList(clazz);
+        for(T anExampleEntity : exampleEntities) {
+            verifyFoundExampleEntity(anExampleEntity, clazz);
+        }
+    }
+    private <T> void doHandleGlobalExamples(final Class<T> clazz, List<T> globalExamples, final DataTable dataTable) {
+        List<Integer> indices = dataTable.asList(Integer.class);
+        for(Integer i : indices) {
+            final T exampleEntity = globalExamples.get(i);
+            verifyFoundExampleEntity(exampleEntity, clazz);
+        }
     }
 
-    @ParameterType("([A-Za-z0-9-_.,]*)")
+    private <T> void verifyFoundExampleEntity(final T exampleEntity, final Class<T> clazz) {
+        final JpaRepository<T, Integer> repository = getRepository(clazz);
+        Example<T> example = Example.of(exampleEntity);
+        final Optional<T> result = repository.findOne(example);
+        assertThat(clazz.getSimpleName() + " from example " + exampleEntity.toString() + " was not found", result.isPresent());
+    }
+
+    @ParameterType("(.*)")
     public String[] tableNames(final String commaDelimitedTableNames) {
         return ArrayUtils.toArray(commaDelimitedTableNames.split(","));
     }
@@ -88,13 +107,13 @@ public class DBStepDefs extends SpringIntegrationTest {
         assertThat("DB is empty", rowCount > 0);
     }
 
-    @Given("^The DB was reset$")
+    @Given("^the DB was reset$")
     public void theDBWasReset() throws Throwable {
         runScript("/reset.sql");
         runScript("/schemaComplete.sql");
     }
 
-    @Given("^The DB has loaded (.*)$")
+    @Given("^the DB has loaded (.*)$")
     public void theDBHasLoadedScript(final String prefix) throws Throwable {
 
         runScript("/" + prefix + "Data.sql");
@@ -128,7 +147,9 @@ public class DBStepDefs extends SpringIntegrationTest {
         assertThat("nameLast was not " + nameLast, person.get().getNameLast(), is(nameLast));
     }
 
-    @Then ("table(s) {tableNames} have {countRule} {int} rows")
-    public void tablesHaveRows(final String[] tables, final String rule, final Integer arg0) {
+//    @Then ("table(s) {tableNames} (?:have|has) {countRule} {int} rows")
+    @Then ("^table(?:s?) ([A-Z,]*) (?:have|has) ([a-z]*) ([0-9]*) rows$")
+    public void tablesHaveRows(final String tableNames, final String countRule, final Integer count) {
+        System.out.println(">>> Will check for tables " + tableNames);
     }
 }

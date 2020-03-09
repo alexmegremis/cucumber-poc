@@ -1,8 +1,8 @@
 Feature: The DB is correctly populated
 
   Background:
-    Given The DB was reset
-    And  The DB has loaded base
+    Given the DB was reset
+    And  the DB has loaded base
 
   Scenario: There is a person recorded
     When The client gets a row count

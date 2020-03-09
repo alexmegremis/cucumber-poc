@@ -45,7 +45,8 @@ VALUES (1, 'Alex', 'Megremis'),
        (2, 'Zoe', 'Megremis'),
        (3, 'Thomas', 'Megremis'),
        (4, 'Watson', 'Megremis'),
-       (5, 'Olive', 'Megremis');
+       (5, 'Olive', 'Megremis'),
+       (6, 'Zoe', 'Nguyen');
 
 INSERT
 INTO PRINCIPAL(ID, ID_PERSON_OWNER, NAME, DATETIME_CREATED, DATETIME_SUPERSEDED)
