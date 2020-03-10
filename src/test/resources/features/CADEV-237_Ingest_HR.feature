@@ -2,7 +2,7 @@ Feature: Ingest HR data into local DB.
 
   Background:
     Given HR ingestion
-    And the DB was reset
+    And the DBs were reset
     And global Person entities
       | id | nameFirst | nameLast | email                 |
       | 1  | Alex      | Megremis | alex@alexmegremis.com |
@@ -34,7 +34,7 @@ Feature: Ingest HR data into local DB.
 
   Scenario: Ingested persons verified
     Given file testData/HR_data_lite.csv
-    And the DB has loaded full
+    And the application DB has loaded full
     When ingestion is triggered
     Then ingestion is successful
     And local Person is found that looks like

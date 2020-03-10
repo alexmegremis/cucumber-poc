@@ -1,39 +1,27 @@
 Feature: The DB is correctly populated
 
   Background:
-    Given the DB was reset
-    And  the DB has loaded base
+    Given the DBs were reset
+    And  the application DB has loaded baseData
+    And global Person entities
+      | id | nameFirst | nameLast | email                 |
+      | 1  | Alex      | Megremis | alex@alexmegremis.com |
+    And global Principal entities
+      | id | name      | idPersonOwner | datetimeCreated | datetimeSuperseded |
+      | 1  | amegremis | 1             | 2020-01-15      | 2019-01-31         |
+      |    |           | 1             |                 |                    |
 
   Scenario: There is a person recorded
-    When The client gets a row count
-    Then The row count is non zero
-
-  Scenario Outline: There is a person recorded
-#    Given The DB was reset
-#    And  The DB has loaded base
-    When The client gets row with ID <id>
-    Then a row is returned
-    And The person has nameFirst <nameFirst> and nameLast <nameLast>
-
-    Examples:
+    Then local Person is found that looks like
       | id | nameFirst | nameLast |
       | 1  | Alex      | Megremis |
-      | 2  | Zoe       | Megremis |
       | 3  | Thomas    | Megremis |
-      | 4  | Watson    | Megremis |
-      | 5  | Olive     | Megremis |
+      |    | Olive     |          |
+    And table PERSON has exactly 5 rows
 
-  Scenario Outline: Persons not in DB are not found
-#    Given The DB was reset
-#    And  The DB has loaded base
-    When The client gets row with ID <id>
-    Then a row is not returned
-
-    Examples:
-      | id | nameFirst | nameLast |
-      | 6  | Dimitrios | Megremis |
-      | 7  | Dimitrios | Megremis |
-      | 17 | Dimitrios | Megremis |
+  Scenario: There is a person recorded
+    Then global Person is found that looks like
+      | 1 |
 
   # https://thepracticaldeveloper.com/2017/08/03/microservices-end-to-end-tests-with-cucumber-and-spring-boot/
   # https://dzone.com/articles/a-guide-to-good-cucumber-practices
