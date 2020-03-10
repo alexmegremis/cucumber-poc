@@ -4,11 +4,11 @@ Feature: Ingest HR data into local DB.
     Given HR ingestion
     And the DB was reset
     And global Person entities
-      | id | nameFirst | nameLast | email                      |
-      | 1  | Alex      | Megremis | alex@alexmegremis.com      |
-      |    | Alex      |          |                            |
-      | 6  | Zoe       | Nguyen   | zoe@alexmegremis.com       |
-      |    |           | Nguyen   |                            |
+      | id | nameFirst | nameLast | email                 |
+      | 1  | Alex      | Megremis | alex@alexmegremis.com |
+      |    | Alex      |          |                       |
+      | 6  | Zoe       | Nguyen   | zoe@alexmegremis.com  |
+      |    |           | Nguyen   |                       |
     And global Principal entities
       | id | name         | idPersonOwner | datetimeCreated | datetimeSuperseded |
       | 1  | alexmegremis | 1             | 2019-01-20      |                    |
@@ -42,9 +42,9 @@ Feature: Ingest HR data into local DB.
       |    | Thomas    |          |       |
       |    |           | Nguyen   |       |
     And global Person is found that looks like
-      | 1  |
-      | 2  |
-      | 3  |
+      | 1 |
+      | 2 |
+      | 3 |
     And local Principal is found that looks like
       | id | name      | idPersonOwner | datetimeCreated | datetimeSuperseded |
       |    | amegremis | 1             | 2020-01-15      |                    |

@@ -1,8 +1,5 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
-import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
-import com.alexmegremis.cucumberPOC.persistence.application.PrincipalEntity;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +11,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.*;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @Slf4j
 public abstract class SpringIntegrationTest {
 
     private static ConfigurableApplicationContext context;
-
-    @Setter
-    protected static List<PersonEntity>    globalPersons;
-    @Setter
-    protected static List<PrincipalEntity> globalPrincipals;
 
     protected ResponseEntity lastResponse;
 
@@ -34,7 +24,7 @@ public abstract class SpringIntegrationTest {
     @Autowired
     protected RestTemplate restTemplate;
 
-    public <T> void doGet(final Class<T> responseType, final String path, final String... variables) {
+    public <T> ResponseEntity<T> doGet(final Class<T> responseType, final String path, final String... variables) {
 
         UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
         UriBuilder        uriBuilder        = uriBuilderFactory.builder();
@@ -46,13 +36,12 @@ public abstract class SpringIntegrationTest {
             }
         }
 
-        log.info(">>> About to call : " + uriBuilderFactory.toString());
-        System.out.println(">>> About to call : " + uriBuilderFactory.toString());
-
+        log.info(">>> About to call endpoint : " + uriBuilder.build().toString());
         final Mono<ResponseEntity<T>> mono = WebClient.create().get().uri(uriBuilder.build()).exchange().flatMap(r -> r.toEntity(responseType));
 
         lastResponse = mono.block();
-        System.out.println(">>> foo");
+
+        return mono.block();
     }
 
     public void setUp() throws Throwable {

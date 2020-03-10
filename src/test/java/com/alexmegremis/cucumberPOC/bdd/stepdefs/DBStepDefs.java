@@ -1,13 +1,12 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
 import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
-import com.alexmegremis.cucumberPOC.persistence.application.PrincipalEntity;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.*;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import io.cucumber.java8.En;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,10 +35,50 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Value("${spring.applicationdatasource.url}")
+    private String url;
+    @Value("${spring.applicationdatasource.username}")
+    private String username;
+
+    @Before
+    public void setUp() throws Throwable {
+        super.setUp();
+
+        DriverManager.registerDriver(new org.h2.Driver());
+        conn = DriverManager.getConnection(url, username, null);
+        log.info(">>> Connection established");
+        scriptRunner = new ScriptRunner(conn);
+    }
+
+    @After
+    public void tearDown() throws Throwable {
+        super.tearDown();
+
+        conn.close();
+        log.info(">>> Connection closed");
+        scriptRunner = null;
+    }
+
     public DBStepDefs() {
-        Then("local Person is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PersonEntity.class, dataTable));
-        Then("local Principal is found that looks like", (final DataTable dataTable) -> doParseLocalExamples(PrincipalEntity.class, dataTable));
-        Then("global Person is found that looks like", (final DataTable dataTable) -> doHandleGlobalExamples(PersonEntity.class, globalPersons, dataTable));
+        Then("^local ([A-Za-z]*) is found that looks like$", (final String entityName, final DataTable dataTable) -> doParseLocalExamples(entityName, dataTable));
+        Then("^global ([A-Za-z]*) is found that looks like$", (final String entityName, final DataTable dataTable) -> doHandleGlobalExamples(entityName, dataTable));
+
+        Given("^the DB was reset$", () -> {
+            runScript("/reset.sql");
+            runScript("/schemaComplete.sql");
+            runScript("/batchH2Schema.sql");
+        });
+
+        Given("^the DB has loaded (.*)$", (final String prefix) -> runScript("/" + prefix + "Data.sql"));
+
+        Then("^table(?:s?) ([A-Z,]*) (?:have|has) ([a-z]*) ([0-9]*) rows$", (final String tableNames, final String countRule, final Integer count) -> {
+           log.info(">>> BDD: Will check for tables " + tableNames);
+        });
+    }
+
+    private <T> void doParseLocalExamples(final String entityName, final DataTable dataTable) {
+        Class<T> clazz = MappingsAware.namedClasses.get(entityName);
+        doParseLocalExamples(clazz, dataTable);
     }
 
     private <T> void doParseLocalExamples(final Class<T> clazz, final DataTable dataTable) {
@@ -47,6 +86,12 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
         for(T anExampleEntity : exampleEntities) {
             verifyFoundExampleEntity(anExampleEntity, clazz);
         }
+    }
+
+    private <T> void doHandleGlobalExamples(final String entityName, final DataTable dataTable) {
+        Class<T> clazz = MappingsAware.namedClasses.get(entityName);
+        final List<T> container = MappingsAware.namedContainers.get(entityName);
+        doHandleGlobalExamples(clazz, container, dataTable);
     }
     private <T> void doHandleGlobalExamples(final Class<T> clazz, List<T> globalExamples, final DataTable dataTable) {
         List<Integer> indices = dataTable.asList(Integer.class);
@@ -63,38 +108,11 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
         assertThat(clazz.getSimpleName() + " from example " + exampleEntity.toString() + " was not found", result.isPresent());
     }
 
-    @ParameterType("(.*)")
-    public String[] tableNames(final String commaDelimitedTableNames) {
-        return ArrayUtils.toArray(commaDelimitedTableNames.split(","));
-    }
-
-    @Before
-    public void setUp() throws Throwable {
-        super.setUp();
-
-        DriverManager.registerDriver(new org.h2.Driver());
-        conn = DriverManager.getConnection(url, "sa", null);
-        log.info(">>> Connection established");
-        scriptRunner = new ScriptRunner(conn);
-    }
-
-    @After
-    public void tearDown() throws Throwable {
-        super.tearDown();
-
-        conn.close();
-        log.info(">>> Connection closed");
-        scriptRunner = null;
-    }
-
     public <T> JpaRepository<T, Integer> getRepository(final Class<T> clazz) {
         Repositories repositories = new Repositories(applicationContext);
         final Optional<Object> result = repositories.getRepositoryFor(clazz);
         return (JpaRepository<T, Integer>) result.get();
     }
-
-    @Value("${spring.applicationdatasource.url}")
-    private String url;
 
     @Given("The client gets a row count$")
     public void clientCallsDefaultHello() throws Throwable {
@@ -105,18 +123,6 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
     @Then("^The row count is non zero$")
     public void theRowCountIsNonZero() throws Throwable {
         assertThat("DB is empty", rowCount > 0);
-    }
-
-    @Given("^the DB was reset$")
-    public void theDBWasReset() throws Throwable {
-        runScript("/reset.sql");
-        runScript("/schemaComplete.sql");
-    }
-
-    @Given("^the DB has loaded (.*)$")
-    public void theDBHasLoadedScript(final String prefix) throws Throwable {
-
-        runScript("/" + prefix + "Data.sql");
     }
 
     public void runScript(final String name) throws IOException {
@@ -145,11 +151,5 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
     public void thePersonHasNameFirsAndNameLast(final String nameFirst, final String nameLast) {
         assertThat("nameFirst was not " + nameFirst, person.get().getNameFirst(), is(nameFirst));
         assertThat("nameLast was not " + nameLast, person.get().getNameLast(), is(nameLast));
-    }
-
-//    @Then ("table(s) {tableNames} (?:have|has) {countRule} {int} rows")
-    @Then ("^table(?:s?) ([A-Z,]*) (?:have|has) ([a-z]*) ([0-9]*) rows$")
-    public void tablesHaveRows(final String tableNames, final String countRule, final Integer count) {
-        System.out.println(">>> Will check for tables " + tableNames);
     }
 }

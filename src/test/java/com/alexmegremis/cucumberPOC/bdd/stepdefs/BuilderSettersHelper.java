@@ -1,6 +1,8 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,18 +12,20 @@ import java.util.function.Function;
 
 public interface BuilderSettersHelper {
 
+    Logger log = LoggerFactory.getLogger(BuilderSettersHelper.class);
+
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     static <T> void setDateIfNotNull(final String dateAsString, Function<Date, T> setter) throws ParseException {
         if (StringUtils.isNotBlank(dateAsString)) {
-            System.out.println(">>> Adding " + setter.toString());
+            log.debug(">>> BDD: Building POJO with {}", dateAsString);
             setter.apply(formatter.parse(dateAsString));
         }
     }
 
     static <T> void setStringIfNotNull(final String string, Function<String, T> setter) {
         if (StringUtils.isNotBlank(string)) {
-            System.out.println(">>> Adding " + setter.toString());
+            log.debug(">>> BDD: Building POJO with {}", string);
             setter.apply(string);
         }
     }
@@ -33,7 +37,7 @@ public interface BuilderSettersHelper {
     }
     static <T> void setIntegerIfNotNull(final Integer integer, Function<Integer, T> setter) {
         if (integer != null) {
-            System.out.println(">>> Adding " + setter.toString());
+            log.debug(">>> BDD: Building POJO with {}", integer);
             setter.apply(integer);
         }
     }
