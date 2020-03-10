@@ -4,11 +4,13 @@ import com.alexmegremis.cucumberPOC.persistence.batch.BatchJobExecutionEntity;
 import com.alexmegremis.cucumberPOC.persistence.batch.BatchJobExecutionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -21,15 +23,17 @@ public class IngestionsController {
     @GetMapping (value = "ingestions/hr/do", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus (code = HttpStatus.OK)
-    public ResponseEntity<String> ingestHR(@RequestParam (name = "filename", required = false) final String name) {
+    public String ingestHR(@RequestParam (name = "filename", required = false) final String name) {
         log.info(">>> HR ingestion called");
-        return ResponseEntity.of(Optional.ofNullable(name));
+        BatchJobExecutionEntity entity = BatchJobExecutionEntity.builder().status("PENDING").createTime(Timestamp.from(Instant.now())).jobExecutionId(22l).build();
+        batchJobExecutionRepository.save(entity);
+        return name;
     }
 
     @GetMapping (value = "ingestions/status", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus (code = HttpStatus.OK)
-    public ResponseEntity<List<BatchJobExecutionEntity>> checkIngestionDB() {
-        return ResponseEntity.of(Optional.ofNullable(batchJobExecutionRepository.findAll()));
+    public List<BatchJobExecutionEntity> checkIngestionDB() {
+        return batchJobExecutionRepository.findAll();
     }
 }

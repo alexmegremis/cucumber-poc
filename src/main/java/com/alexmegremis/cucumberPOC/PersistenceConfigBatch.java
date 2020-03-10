@@ -1,22 +1,22 @@
 package com.alexmegremis.cucumberPOC;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.*;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
-@EnableAutoConfiguration
-@EnableTransactionManagement
+//@EnableAutoConfiguration
+@PropertySource({"classpath:persistence-multiple-db-boot.properties"})
 @EnableJpaRepositories(
         basePackages = {"com.alexmegremis.cucumberPOC.persistence.batch"},
         entityManagerFactoryRef = "batchEntityManager",
@@ -24,27 +24,33 @@ import java.util.Properties;
 public class PersistenceConfigBatch {
 
 
+    @Autowired
+    private Environment env;
+
     @Bean
+    @ConfigurationProperties(prefix="batch.datasource")
     public DataSource batchDataSource() {
-        return batchDataSourceProperties().initializeDataSourceBuilder().build();
+        return DataSourceBuilder.create().build();
     }
 
 
     @Bean
     public LocalContainerEntityManagerFactoryBean batchEntityManager() {
-        LocalContainerEntityManagerFactoryBean result = new LocalContainerEntityManagerFactoryBean();
+        final LocalContainerEntityManagerFactoryBean result = new LocalContainerEntityManagerFactoryBean();
+
         result.setDataSource(batchDataSource());
         result.setPackagesToScan("com.alexmegremis.cucumberPOC.persistence.batch");
 
         JpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
         result.setJpaVendorAdapter(jpaVendorAdapter);
 
-        Properties jpaProperties = batchJPAProperties();
-        result.setJpaProperties(jpaProperties);
+        final Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+        result.setJpaPropertyMap(properties);
 
         return result;
     }
-
 
     @Bean
     public PlatformTransactionManager batchTransactionManager() {
@@ -52,19 +58,19 @@ public class PersistenceConfigBatch {
         transactionManager.setEntityManagerFactory(batchEntityManager().getObject());
         return transactionManager;
     }
-
-
-    @Bean
-    @ConfigurationProperties("spring.batchdatasource")
-    public DataSourceProperties batchDataSourceProperties() {
-        DataSourceProperties dataSourceProperties = new DataSourceProperties();
-        return dataSourceProperties;
-    }
-
-    @Bean
-    @ConfigurationProperties("spring.batchdatasource.properties")
-    public Properties batchJPAProperties() {
-        Properties result = new Properties();
-        return result;
-    }
+//
+//
+//    @Bean
+//    @ConfigurationProperties("batch.datasource")
+//    public DataSourceProperties batchDataSourceProperties() {
+//        DataSourceProperties dataSourceProperties = new DataSourceProperties();
+//        return dataSourceProperties;
+//    }
+//
+//    @Bean
+//    @ConfigurationProperties("batch.datasource.properties")
+//    public Properties batchJPAProperties() {
+//        Properties result = new Properties();
+//        return result;
+//    }
 }

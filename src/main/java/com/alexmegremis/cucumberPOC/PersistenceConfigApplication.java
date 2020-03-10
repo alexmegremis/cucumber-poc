@@ -3,7 +3,6 @@ package com.alexmegremis.cucumberPOC;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.*;
@@ -55,14 +54,15 @@ public class PersistenceConfigApplication {
 
     @Bean
     @Primary
-    @ConfigurationProperties("spring.applicationdatasource")
+    @ConfigurationProperties("application.datasource")
     public DataSourceProperties applicationDataSourceProperties() {
         DataSourceProperties dataSourceProperties = new DataSourceProperties();
         return dataSourceProperties;
     }
 
     @Bean
-    @ConfigurationProperties("spring.applicationdatasource.properties")
+    @Primary
+    @ConfigurationProperties("application.datasource.properties")
     public Properties applicationJPAProperties() {
         Properties result = new Properties();
         return result;
