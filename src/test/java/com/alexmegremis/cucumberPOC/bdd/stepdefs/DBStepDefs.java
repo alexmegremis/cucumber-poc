@@ -54,7 +54,7 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
         batchDBConnection = DriverManager.getConnection(batchDataSourceURL, batchDataSourceUsername, null);
         log.info(">>> DBB: Connection established to {}", batchDataSourceURL);
         applicationScriptRunner = new ScriptRunner(applicationDBConnection);
-        batchScriptRunner = new ScriptRunner(applicationDBConnection);
+        batchScriptRunner = new ScriptRunner(batchDBConnection);
     }
 
     @After
@@ -74,7 +74,7 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
 
         Given("^the DBs were reset$", () -> {
             runScript("/reset.sql", applicationScriptRunner);
-            runScript("/schemaComplete.sql", applicationScriptRunner);
+            runScript("/schemaFull.sql", applicationScriptRunner);
             runScript("/batchH2Schema.sql", batchScriptRunner);
         });
 

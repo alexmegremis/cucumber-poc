@@ -26,14 +26,14 @@ Feature: Ingest HR data into local DB.
     And tables PERSON,PRINCIPAL have over 5 rows
 
   Scenario: Ingest from custom file.
-    Given file testData/HR_data_lite.csv
+    Given file src/test/resources/testData/HR_data_lite.csv
     When ingestion is triggered
     Then ingestion is successful
     And table PERSON has exactly 12 rows
     And table PRINCIPAL has exactly 5 rows
 
   Scenario: Ingested persons verified
-    Given file testData/HR_data_lite.csv
+    Given file src/test/resources/testData/HR_data_lite.csv
     And the application DB has loaded testData/fullData
     When ingestion is triggered
     Then ingestion is successful

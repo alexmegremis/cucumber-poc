@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -107,9 +108,14 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
             return;
         }
 
-        File        file        = new File(fileName);
-        File foo = new File(this.getClass().getResource(fileName).toURI());
-        if (! file.exists()) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            final URL fileAsResource = this.getClass().getResource(fileName);
+            if (fileAsResource != null) {
+                file = new File(fileAsResource.toURI());
+            }
+        }
+        if (!file.exists()) {
             fail("Invalid ingestion file " + file.getPath() + " : " + file.getAbsolutePath());
         } else {
             this.file = file;

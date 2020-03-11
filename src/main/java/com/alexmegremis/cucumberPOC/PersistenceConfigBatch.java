@@ -23,7 +23,6 @@ import java.util.Map;
         transactionManagerRef = "batchTransactionManager")
 public class PersistenceConfigBatch {
 
-
     @Autowired
     private Environment env;
 
