@@ -2,7 +2,7 @@ Feature: The Greeting API works
 
   Background:
     Given the DBs were reset
-    And  the application DB has loaded baseData
+    And  the application DB has loaded testData/baseData
 
   Scenario: client makes call to GET /api/v1/hello
     When the client calls /api/v1/hello

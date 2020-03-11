@@ -9,9 +9,9 @@
     </parent>
 
     <groupId>com.alexmegremis</groupId>
-    <artifactId>funfun</artifactId>
+    <artifactId>cucumber-poc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>funfun</name>
+    <name>Cucumber POC</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>

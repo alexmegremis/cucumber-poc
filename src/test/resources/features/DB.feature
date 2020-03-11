@@ -2,7 +2,7 @@ Feature: The DB is correctly populated
 
   Background:
     Given the DBs were reset
-    And  the application DB has loaded baseData
+    And  the application DB has loaded testData/baseData
     And global Person entities
       | id | nameFirst | nameLast | email                 |
       | 1  | Alex      | Megremis | alex@alexmegremis.com |
@@ -21,7 +21,7 @@ Feature: The DB is correctly populated
 
   Scenario: There is a person recorded
     Then global Person is found that looks like
-      | 1 |
+      | 0 |
 
   # https://thepracticaldeveloper.com/2017/08/03/microservices-end-to-end-tests-with-cucumber-and-spring-boot/
   # https://dzone.com/articles/a-guide-to-good-cucumber-practices

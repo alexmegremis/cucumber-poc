@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 @Slf4j
 public class DBStepDefs extends SpringIntegrationTest implements En {
@@ -79,9 +80,9 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
         });
 
         Given("^the (application|batch) DB has loaded (.*)$", (final String db, final String fileName) -> runScript("/" + fileName + ".sql",
-                                                                                                                  db.equals("application") ?
-                                                                                                                  applicationScriptRunner :
-                                                                                                                  batchScriptRunner));
+                                                                                                                    db.equals("application") ?
+                                                                                                                    applicationScriptRunner :
+                                                                                                                    batchScriptRunner));
 
         Then("^table(?:s?) ([A-Z,]*) (?:have|has) ([a-z]*) ([0-9]*) rows$", (final String tableNames, final String countRule, final Integer count) -> {
             log.info(">>> BDD: Will check for tables " + tableNames);
@@ -129,7 +130,10 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
 
     public void runScript(final String name, final ScriptRunner scriptRunner) throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream(name);
-        Reader      reader      = new BufferedReader(new InputStreamReader(inputStream));
+        if (inputStream == null) {
+            fail("input file not found : " + name);
+        }
+        Reader reader = new BufferedReader(new InputStreamReader(inputStream));
         scriptRunner.setLogWriter(null);
         scriptRunner.runScript(reader);
     }
