@@ -35,13 +35,13 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Value("${spring.applicationdatasource.url}")
+    @Value("${application.datasource.jdbcUrl}")
     private String applicationDataSourceURL;
-    @Value("${spring.applicationdatasource.username}")
+    @Value("${application.datasource.username}")
     private String applicationDataSourceUsername;
-    @Value("${spring.batchdatasource.url}")
+    @Value("${batch.datasource.jdbcUrl}")
     private String batchDataSourceURL;
-    @Value("${spring.batchdatasource.username}")
+    @Value("${batch.datasource.username}")
     private String batchDataSourceUsername;
 
     @Before
@@ -78,7 +78,7 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
             runScript("/batchH2Schema.sql", batchScriptRunner);
         });
 
-        Given("^the (application|batch) DB has loaded (.*)$", (final String db, final String fileName) -> runScript("/" + fileName + "sql",
+        Given("^the (application|batch) DB has loaded (.*)$", (final String db, final String fileName) -> runScript("/" + fileName + ".sql",
                                                                                                                   db.equals("application") ?
                                                                                                                   applicationScriptRunner :
                                                                                                                   batchScriptRunner));

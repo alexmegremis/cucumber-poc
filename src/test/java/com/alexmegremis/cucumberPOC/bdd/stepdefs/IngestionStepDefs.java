@@ -1,10 +1,8 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
-import com.alexmegremis.cucumberPOC.persistence.batch.BatchJobExecutionEntity;
-import com.alexmegremis.cucumberPOC.persistence.batch.BatchJobExecutionRepository;
+import com.alexmegremis.cucumberPOC.persistence.batch.*;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -13,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -24,6 +20,8 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
 
     @Autowired
     private BatchJobExecutionRepository batchJobExecutionRepository;
+    @Autowired
+    private BatchJobInstanceRepository batchJobInstanceRepository;
 
     public static final Map<String, String> INGESTION_ENDPOINTS = new HashMap<>();
 
@@ -49,6 +47,7 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
 
             log.info(">>> BDD: Batch DB reset");
             batchJobExecutionRepository.deleteAll();
+            batchJobInstanceRepository.deleteAll();
 
             ResponseEntity<String> ingestionResponse;
 
@@ -61,24 +60,11 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
             assertThat("Ingestion request to " + endpoint.getValue() + " responded with code " + ingestionResponse.getStatusCode(),
                        ingestionResponse.getStatusCode().equals(HttpStatus.OK));
 //            assertThat("Ingestion response was " + ingestionResponse.getBody(), ingestionResponse.getBody().endsWith(ingestionFileName));
-
-            Runnable mockJobNotifier = new Runnable() {
-                @SneakyThrows
-                @Override
-                public void run() {
-                    Thread.sleep(1500);
-                    final BatchJobExecutionEntity completed = BatchJobExecutionEntity.builder().status("COMPLETED").build();
-                    batchJobExecutionRepository.save(completed);
-                }
-            };
-
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(mockJobNotifier);
         });
 
         Then("ingestion is successful", () -> {
 
-           BatchJobExecutionEntity batchJobExecutionEntity = BatchJobExecutionEntity.builder().status("COMPLETED").build();
+           BatchJobExecutionEntity batchJobExecutionEntity = BatchJobExecutionEntity.builder().status("COMPLETE").build();
            Example<BatchJobExecutionEntity> example = Example.of(batchJobExecutionEntity);
            Boolean ingestionComplete = true;
            Boolean previousStatus = true;
@@ -101,7 +87,7 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
                     log.info(">>> BDD: Ingestion completed. Proceeding.");
                 }
                 if(!ingestionComplete) {
-                    Thread.sleep(2500L);
+                    Thread.sleep(250L);
                 }
             } while(!ingestionComplete);
 
@@ -116,12 +102,13 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
         endpoint = first.get();
     }
 
-    private void setFile(final String fileName) {
+    private void setFile(final String fileName) throws Exception {
         if (fileName.equalsIgnoreCase("default")) {
             return;
         }
 
-        File file = new File(fileName);
+        File        file        = new File(fileName);
+        File foo = new File(this.getClass().getResource(fileName).toURI());
         if (! file.exists()) {
             fail("Invalid ingestion file " + file.getPath() + " : " + file.getAbsolutePath());
         } else {

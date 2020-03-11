@@ -41,7 +41,7 @@ public abstract class SpringIntegrationTest {
 
         lastResponse = mono.block();
 
-        return mono.block();
+        return lastResponse;
     }
 
     public void setUp() throws Throwable {

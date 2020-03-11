@@ -7,5 +7,5 @@ import org.springframework.test.context.TestPropertySource;
 
 @CucumberOptions (features = "classpath:features", plugin = {"pretty", "html:target/cucumber-report.html"})
 @RunWith (Cucumber.class)
-@TestPropertySource (locations = "classpath:application.properties")
+@TestPropertySource (locations = {"classpath:application.properties", "classpath:persistence-multiple-db-boot.properties"})
 public class CucumberTest {}

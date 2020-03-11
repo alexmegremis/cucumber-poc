@@ -34,7 +34,7 @@ Feature: Ingest HR data into local DB.
 
   Scenario: Ingested persons verified
     Given file testData/HR_data_lite.csv
-    And the application DB has loaded full
+    And the application DB has loaded testData/fullData
     When ingestion is triggered
     Then ingestion is successful
     And local Person is found that looks like

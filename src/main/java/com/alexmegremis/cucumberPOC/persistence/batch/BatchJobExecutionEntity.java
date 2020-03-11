@@ -1,6 +1,7 @@
 package com.alexmegremis.cucumberPOC.persistence.batch;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -15,8 +16,13 @@ import java.util.Objects;
 public class BatchJobExecutionEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "BatchJobExecutionEntityGenerator")
+    @GenericGenerator (name = "BatchJobExecutionEntityGenerator", strategy = "increment")
     @Column (name = "JOB_EXECUTION_ID")
     private Long      jobExecutionId;
+    @Basic
+    @Column (name = "JOB_INSTANCE_ID")
+    private Long      jobInstanceId;
     @Basic
     @Column (name = "CREATE_TIME")
     private Timestamp createTime;
@@ -44,6 +50,13 @@ public class BatchJobExecutionEntity {
     @Basic
     @Column (name = "VERSION")
     private Long      version;
+
+    @Override
+    public String toString() {
+        return "BatchJobExecutionEntity{" + "jobExecutionId=" + jobExecutionId + ", jobInstanceId=" + jobInstanceId + ", createTime=" + createTime + ", endTime=" + endTime +
+                       ", exitCode='" + exitCode + '\'' + ", exitMessage='" + exitMessage + '\'' + ", jobConfigurationLocation='" + jobConfigurationLocation + '\'' +
+                       ", lastUpdated=" + lastUpdated + ", startTime=" + startTime + ", status='" + status + '\'' + ", version=" + version + '}';
+    }
 
     @Override
     public boolean equals(final Object o) {
