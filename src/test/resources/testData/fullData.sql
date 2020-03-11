@@ -42,39 +42,39 @@
 INSERT
 INTO PERSON (ID, NAME_FIRST, NAME_LAST)
 VALUES (1, 'Alex', 'Megremis'),
-       (2, 'Zoe', 'Megremis'),
-       (3, 'Thomas', 'Megremis'),
-       (4, 'Watson', 'Megremis'),
-       (5, 'Olive', 'Megremis'),
-       (6, 'Zoe', 'Nguyen');
+    (2, 'Zoe', 'Megremis'),
+    (3, 'Thomas', 'Megremis'),
+    (4, 'Watson', 'Megremis'),
+    (5, 'Olive', 'Megremis'),
+    (6, 'Zoe', 'Nguyen');
 
 INSERT
 INTO PRINCIPAL(ID, ID_PERSON_OWNER, NAME, DATETIME_CREATED, DATETIME_SUPERSEDED)
 VALUES (1, 1, 'amegremis', '2020-01-15', NULL),
-       (2, 1, 'alexam', '2020-01-29', NULL),
-       (3, 2, 'cnguyen', '2020-02-01', NULL),
-       (4, 3, 'oktomas', '2020-02-01', NULL);
+    (2, 1, 'alexam', '2020-01-29', NULL),
+    (3, 2, 'cnguyen', '2020-02-01', NULL),
+    (4, 3, 'oktomas', '2020-02-01', NULL);
 
 INSERT
 INTO APPLICATION(ID, NAME, IDENTIFIER)
 VALUES (1, 'Core Application', 'CORE01'),
-       (2, 'Front end', 'FRONT01');
+    (2, 'Front end', 'FRONT01');
 
 INSERT
 INTO REPO (ID, ID_APPLICATION, NAME, DATETIME_CREATED, DATETIME_SUPERSEDED)
 VALUES (1, 1, 'REPO01', '2020-01-15', NULL),
-       (2, 2, 'UI-BASE', '2020-01-22', NULL),
-       (3, 1, 'MYPOC', '2020-01-23', NULL);
+    (2, 2, 'UI-BASE', '2020-01-22', NULL),
+    (3, 1, 'MYPOC', '2020-01-23', NULL);
 
 INSERT
-INTO MAP_PRINCIPAL_REPO(ID, ID_PRINCIPAL, ID_REPO, PERMISSION, DATETIME_CREATED, DATETIME_SUPERSEDED)
-VALUES (1, 1, 1, 'WRITE', '2020-01-15', '2020-01-20'),
-       (2, 1, 1, 'ADMIN', '2020-01-20', NULL),
-       (3, 2, 1, 'WRITE', '2020-01-20', NULL),
-       (4, 1, 2, 'ADMIN', '2020-01-22', NULL),
-       (5, 1, 3, 'ADMIN', '2020-02-23', NULL),
-       (6, 3, 1, 'READ', '2020-02-27', NULL),
-       (7, 3, 2, 'READ', '2020-02-27', NULL),
-       (8, 3, 3, 'READ', '2020-02-27', NULL),
-       (9, 4, 1, 'WRITE', '2020-02-27', NULL),
-       (10, 4, 2, 'WRITE', '2020-02-27', NULL);
+INTO MAP_PRINCIPAL_REPO(ID, ID_PRINCIPAL, ID_REPO, PERMISSION, PERMISSION_BITS, DATETIME_CREATED, DATETIME_SUPERSEDED)
+VALUES (1, 1, 1, 'WRITE', 342, '2020-01-15', '2020-01-20'),
+    (2, 1, 1, 'ADMIN', 342, '2020-01-20', NULL),
+    (3, 2, 1, 'WRITE', 342, '2020-01-20', NULL),
+    (4, 1, 2, 'ADMIN', 342, '2020-01-22', NULL),
+    (5, 1, 3, 'ADMIN', 342, '2020-02-23', NULL),
+    (6, 3, 1, 'READ', 342, '2020-02-27', NULL),
+    (7, 3, 2, 'READ', 342, '2020-02-27', NULL),
+    (8, 3, 3, 'READ', 342, '2020-02-27', NULL),
+    (9, 4, 1, 'WRITE', 342, '2020-02-27', NULL),
+    (10, 4, 2, 'WRITE', 342, '2020-02-27', NULL);
