@@ -7,5 +7,5 @@ import org.springframework.test.context.TestPropertySource;
 
 @CucumberOptions (features = "classpath:features", plugin = {"pretty", "html:target/cucumber-report.html"}, glue = "com.alexmegremis.cucumberPOC.bdd")
 @RunWith (Cucumber.class)
-@TestPropertySource (locations = {"classpath:application.properties", "classpath:persistence-multiple-db-boot.properties"})
+@TestPropertySource (locations = {"classpath:application.yml", "classpath:persistence-multiple-db-boot.yml"})
 public class CucumberTest {}

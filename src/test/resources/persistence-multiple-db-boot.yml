@@ -1,0 +1,17 @@
+application:
+  datasource:
+    jdbcUrl: jdbc:h2:tcp://localhost:9101/TESTcucumberPOC;FILE_LOCK=NO
+    password: ''
+    username: TESTsa
+batch:
+  datasource:
+    jdbcUrl: jdbc:h2:tcp://localhost:9101/TESTcucumberPOCbatch;FILE_LOCK=NO
+    password: ''
+    username: TESTSABATCH
+hibernate:
+  cache:
+    use_query_cache: false
+    use_second_level_cache: false
+  dialect: org.hibernate.dialect.H2Dialect
+  hbm2ddl:
+    auto: validate

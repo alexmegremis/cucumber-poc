@@ -3,7 +3,8 @@ package com.alexmegremis.cucumberPOC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.*;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @Configuration
 //@EnableAutoConfiguration
-@PropertySource({"classpath:persistence-multiple-db-boot.properties"})
+//@PropertySource({"classpath:persistence-multiple-db-boot.yml"})
 @EnableJpaRepositories(
         basePackages = {"com.alexmegremis.cucumberPOC.persistence.batch"},
         entityManagerFactoryRef = "batchEntityManager",
@@ -57,19 +58,4 @@ public class PersistenceConfigBatch {
         transactionManager.setEntityManagerFactory(batchEntityManager().getObject());
         return transactionManager;
     }
-//
-//
-//    @Bean
-//    @ConfigurationProperties("batch.datasource")
-//    public DataSourceProperties batchDataSourceProperties() {
-//        DataSourceProperties dataSourceProperties = new DataSourceProperties();
-//        return dataSourceProperties;
-//    }
-//
-//    @Bean
-//    @ConfigurationProperties("batch.datasource.properties")
-//    public Properties batchJPAProperties() {
-//        Properties result = new Properties();
-//        return result;
-//    }
 }

@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Configuration
 //@EnableAutoConfiguration
-@PropertySource({"classpath:persistence-multiple-db-boot.properties"})
+//@PropertySource({"classpath:persistence-multiple-db-boot.yml"})
 @EnableJpaRepositories(
         basePackages = {"com.alexmegremis.cucumberPOC.persistence.application"},
         entityManagerFactoryRef = "applicationEntityManager",
@@ -59,20 +59,4 @@ public class PersistenceConfigApplication {
         transactionManager.setEntityManagerFactory(applicationEntityManager().getObject());
         return transactionManager;
     }
-
-//    @Bean
-//    @Primary
-//    @ConfigurationProperties("application.datasource")
-//    public DataSourceProperties applicationDataSourceProperties() {
-//        DataSourceProperties dataSourceProperties = new DataSourceProperties();
-//        return dataSourceProperties;
-//    }
-//
-//    @Bean
-//    @Primary
-//    @ConfigurationProperties("application.datasource.properties")
-//    public Properties applicationJPAProperties() {
-//        Properties result = new Properties();
-//        return result;
-//    }
 }
