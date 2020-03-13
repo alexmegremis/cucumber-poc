@@ -32,6 +32,8 @@ public class CucumberPOCConfig implements ApplicationContextAware {
         Resource multipleDB = new ClassPathResource("persistence-multiple-db-boot.yml");
 
         yamlProperties.setResources(application, multipleDB);
+        yamlProperties.afterPropertiesSet();
+
         properties.setProperties(yamlProperties.getObject());
         properties.setTrimValues(true);
 
