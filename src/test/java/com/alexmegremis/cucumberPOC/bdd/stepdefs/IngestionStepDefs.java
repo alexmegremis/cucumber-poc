@@ -124,8 +124,8 @@ public class IngestionStepDefs extends SpringIntegrationTest implements En {
     }
 
     private <T> void parseDataTable(final String entityName, final DataTable dataTable) {
-        Class<T>      clazz      = MappingsAware.namedClasses.get(entityName);
-        final List<T> collection = MappingsAware.namedContainers.get(entityName);
+        Class<T>      clazz      = MappingsAware.getClassByNameIgnoreCase(entityName);
+        final List<T> collection = MappingsAware.getContainerByNameIgnoreCase(entityName);
         List<T>       result     = dataTable.asList(clazz);
         collection.clear();
         collection.addAll(result);

@@ -17,10 +17,10 @@ import org.springframework.data.repository.support.Repositories;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @Slf4j
@@ -84,13 +84,31 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
                                                                                                                     applicationScriptRunner :
                                                                                                                     batchScriptRunner));
 
-        Then("^table(?:s?) ([A-Z,]*) (?:have|has) ([a-z]*) ([0-9]*) rows$", (final String tableNames, final String countRule, final Integer count) -> {
-            log.info(">>> BDD: Will check for tables " + tableNames);
+        Then("^table(?:s?) ([A-Z, ]*) (?:have|has) (exactly|under|over) ([0-9]*) row(?:s?)$", (final String concatenatedTableNames, final String countRule, final Integer count) -> {
+            log.info(">>> BDD: Will check for tables " + concatenatedTableNames);
+            Arrays.asList(concatenatedTableNames.replaceAll(" ", "").split(",")).forEach(t -> verifyPopulatedTable(t, countRule, count));
         });
     }
 
+    private void verifyPopulatedTable(final String tableName, final String countRule, final Integer expectedCount) {
+        final Class entityClass = MappingsAware.getClassByNameIgnoreCase(tableName);
+        final JpaRepository repository = getRepository(entityClass);
+        final long actualCount = repository.count();
+        switch (countRule){
+            case "exactly" :
+                assertTrue(actualCount == expectedCount);
+                break;
+            case "under" :
+                assertTrue(actualCount < expectedCount);
+                break;
+            case "over" :
+                assertTrue(actualCount > expectedCount);
+                break;
+        }
+    }
+
     private <T> void doParseLocalExamples(final String entityName, final DataTable dataTable) {
-        Class<T> clazz = MappingsAware.namedClasses.get(entityName);
+        Class<T> clazz = MappingsAware.getClassByNameIgnoreCase(entityName);
         doParseLocalExamples(clazz, dataTable);
     }
 
@@ -102,8 +120,8 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
     }
 
     private <T> void doHandleGlobalExamples(final String entityName, final DataTable dataTable) {
-        Class<T>      clazz     = MappingsAware.namedClasses.get(entityName);
-        final List<T> container = MappingsAware.namedContainers.get(entityName);
+        Class<T>      clazz     = MappingsAware.getClassByNameIgnoreCase(entityName);
+        final List<T> container = MappingsAware.getContainerByNameIgnoreCase(entityName);
         doHandleGlobalExamples(clazz, container, dataTable);
     }
 
