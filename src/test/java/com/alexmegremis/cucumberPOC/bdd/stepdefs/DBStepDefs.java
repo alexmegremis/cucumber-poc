@@ -6,6 +6,7 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java8.En;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,10 +69,10 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
     }
 
     public DBStepDefs() {
-        Then("^local ([A-Za-z]*) is found that looks like$",
-             (final String entityName, final DataTable dataTable) -> doParseLocalExamples(entityName, dataTable));
-        Then("^global ([A-Za-z]*) is found that looks like$",
-             (final String entityName, final DataTable dataTable) -> doHandleGlobalExamples(entityName, dataTable));
+        Then("^local ([A-Za-z]*) is( not)? found that looks like$",
+             (final String entityName, final String negativeCondition, final DataTable dataTable) -> handleLocalExamples(entityName, StringUtils.isEmpty(negativeCondition), dataTable));
+        Then("^global ([A-Za-z]*) is( not)? found that looks like$",
+             (final String entityName, final String negativeCondition, final DataTable dataTable) -> handleGlobalExamples(entityName, StringUtils.isEmpty(negativeCondition), dataTable));
 
         Given("^the DBs were reset$", () -> {
             runScript("/reset.sql", applicationScriptRunner);
@@ -94,50 +95,61 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
         final Class entityClass = MappingsAware.getClassByNameIgnoreCase(tableName);
         final JpaRepository repository = getRepository(entityClass);
         final long actualCount = repository.count();
+
+        String message = String.format(">>> Table %s had %d rows. It was expected to have %s %d.", tableName, actualCount, countRule, actualCount);
+
         switch (countRule){
             case "exactly" :
-                assertTrue(actualCount == expectedCount);
+                assertTrue(message,actualCount == expectedCount);
                 break;
             case "under" :
-                assertTrue(actualCount < expectedCount);
+                assertTrue(message,actualCount < expectedCount);
                 break;
             case "over" :
-                assertTrue(actualCount > expectedCount);
+                assertTrue(message,actualCount > expectedCount);
                 break;
         }
+
+        log.info(message);
     }
 
-    private <T> void doParseLocalExamples(final String entityName, final DataTable dataTable) {
+    private <T> void handleLocalExamples(final String entityName, final Boolean mustHave, final DataTable dataTable) {
         Class<T> clazz = MappingsAware.getClassByNameIgnoreCase(entityName);
-        doParseLocalExamples(clazz, dataTable);
+        doHandleLocalExamples(clazz,mustHave, dataTable);
     }
 
-    private <T> void doParseLocalExamples(final Class<T> clazz, final DataTable dataTable) {
+    private <T> void doHandleLocalExamples(final Class<T> clazz, final Boolean mustHave, final DataTable dataTable) {
         List<T> exampleEntities = dataTable.asList(clazz);
         for (T anExampleEntity : exampleEntities) {
-            verifyFoundExampleEntity(anExampleEntity, clazz);
+            verifyFoundExampleEntity(anExampleEntity, clazz, mustHave);
         }
     }
 
-    private <T> void doHandleGlobalExamples(final String entityName, final DataTable dataTable) {
+    private <T> void handleGlobalExamples(final String entityName, final Boolean mustHave, final DataTable dataTable) {
         Class<T>      clazz     = MappingsAware.getClassByNameIgnoreCase(entityName);
         final List<T> container = MappingsAware.getContainerByNameIgnoreCase(entityName);
-        doHandleGlobalExamples(clazz, container, dataTable);
+        doHandleGlobalExamples(clazz, mustHave, container, dataTable);
     }
 
-    private <T> void doHandleGlobalExamples(final Class<T> clazz, List<T> globalExamples, final DataTable dataTable) {
+    private <T> void doHandleGlobalExamples(final Class<T> clazz, final Boolean mustHave, List<T> globalExamples, final DataTable dataTable) {
         List<Integer> indices = dataTable.asList(Integer.class);
         for (Integer i : indices) {
             final T exampleEntity = globalExamples.get(i);
-            verifyFoundExampleEntity(exampleEntity, clazz);
+            verifyFoundExampleEntity(exampleEntity, clazz, mustHave);
         }
     }
 
-    private <T> void verifyFoundExampleEntity(final T exampleEntity, final Class<T> clazz) {
+    private <T> void verifyFoundExampleEntity(final T exampleEntity, final Class<T> clazz, final Boolean mustHave) {
         final JpaRepository<T, Integer> repository = getRepository(clazz);
-        Example<T>                      example    = Example.of(exampleEntity);
-        final Optional<T>               result     = repository.findOne(example);
-        assertThat(clazz.getSimpleName() + " from example " + exampleEntity.toString() + " was not found", result.isPresent());
+        Example<T>    example = Example.of(exampleEntity);
+        final List<T> result  = repository.findAll(example);
+
+        String message = String.format(">>> Was expecting to find %sinstance(s) of %s that looked like %s. Found exactly %d.", mustHave ? "at least 1" : "",
+                                       clazz.getSimpleName(), example.toString(), result.size());
+
+        assertThat(message, result.isEmpty() == !mustHave);
+
+        log.info(message);
     }
 
     public <T> JpaRepository<T, Integer> getRepository(final Class<T> clazz) {
