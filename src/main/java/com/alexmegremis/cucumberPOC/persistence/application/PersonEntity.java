@@ -1,6 +1,7 @@
 package com.alexmegremis.cucumberPOC.persistence.application;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import java.util.Set;
 public class PersonEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PersonEntityGenerator")
+    @GenericGenerator (name = "PersonEntityGenerator", strategy = "com.alexmegremis.cucumberPOC.persistence.ResettingIncrementGenerator")
     @Column(name = "ID")
     private Integer id;
 

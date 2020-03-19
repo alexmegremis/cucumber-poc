@@ -17,7 +17,7 @@ public class BatchJobExecutionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "BatchJobExecutionEntityGenerator")
-    @GenericGenerator (name = "BatchJobExecutionEntityGenerator", strategy = "increment")
+    @GenericGenerator (name = "BatchJobExecutionEntityGenerator", strategy = "com.alexmegremis.cucumberPOC.persistence.ResettingIncrementGenerator")
     @Column (name = "JOB_EXECUTION_ID")
     private Long      jobExecutionId;
     @Basic

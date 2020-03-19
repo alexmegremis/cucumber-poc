@@ -1,6 +1,8 @@
 package com.alexmegremis.cucumberPOC.bdd.stepdefs;
 
+import com.alexmegremis.cucumberPOC.persistence.ResettingIncrementGenerator;
 import com.alexmegremis.cucumberPOC.persistence.application.PersonEntity;
+import com.alexmegremis.cucumberPOC.persistence.application.PersonRepository;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -36,6 +38,8 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
 
     @Autowired
     private ApplicationContext applicationContext;
+    @Autowired
+    private PersonRepository personRepository;
 
     @Value("${application.datasource.jdbcUrl}")
     private String applicationDataSourceURL;
@@ -78,6 +82,11 @@ public class DBStepDefs extends SpringIntegrationTest implements En {
             runScript("/reset.sql", applicationScriptRunner);
             runScript("/schemaFull.sql", applicationScriptRunner);
             runScript("/batchH2Schema.sql", batchScriptRunner);
+
+            ResettingIncrementGenerator.resetAll();
+
+            personRepository.save(PersonEntity.builder().nameFirst("UNKNOWN").nameLast("UNKNOWN").build());
+
         });
 
         Given("^the (application|batch) DB has loaded (.*)$", (final String db, final String fileName) -> runScript("/" + fileName + ".sql",
